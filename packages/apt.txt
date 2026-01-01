@@ -1,0 +1,23 @@
+# Core build tools
+build-essential
+make
+
+# Version control & networking
+git
+curl
+wget
+ca-certificates
+
+# Python
+python3
+python3-pip
+python3-venv
+
+# Terminal tools
+tmux
+
+# Editor support
+neovim
+
+# Utilities
+unzip
