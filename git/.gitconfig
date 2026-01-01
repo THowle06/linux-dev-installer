@@ -1,0 +1,15 @@
+[user]
+	name = Tyler Howle
+	email = t.howle06@outlook.com
+
+[core]
+	editor = "code --wait"
+
+[pull]
+	rebase = false
+
+[init]
+	defaultBranch = main
+
+[color]
+	ui = auto
