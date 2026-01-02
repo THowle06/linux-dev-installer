@@ -127,6 +127,12 @@ if [ -s "$NVM_DIR/bash_completion" ]; then
     . "$NVM_DIR/bash_completion"
 fi
 
+if [ -d "/usr/lib/jvm/java-21-openjdk-amd64" ]; then
+    export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
+    export PATH="$JAVA_HOME/bin:$PATH"
+fi
+
+
 # Local, machine-specific configuration (not tracked in git)
 if [ -f "$HOME/.bashrc.local" ]; then
     . "$HOME/.bashrc.local"
