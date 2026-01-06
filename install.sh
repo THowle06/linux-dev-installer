@@ -2,6 +2,13 @@
 set -euo pipefail
 
 #######################################
+# Bootstrap
+#######################################
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/scripts/lib/logging.sh"
+
+#######################################
 # Configuration
 #######################################
 
@@ -10,42 +17,15 @@ GO_VERSION="1.25.5"
 GO_INSTALL_DIR="/usr/local/go"
 
 #######################################
-# Paths
-#######################################
-
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-#######################################
-# Logging Helpers
-#######################################
-
-log() {
-    echo -e "\n\033[1;34m==> $1\033[0m"
-}
-
-log_step() {
-    echo -e "  \033[1;32m]→ $1\033[0m"
-}
-
-log_skip() {
-    echo -e "  \033[1;33m↪ $1 (skipped)\033[0m"
-}
-
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
-
-#######################################
 # APT Packages
 #######################################
 
 install_apt_packages() {
-    log "System packages (APT)"
+    log_info "Installing system packages (APT)"
 
-    log_step "Updating package lists"
     sudo apt update
 
-    log_step "Installing packages from packages/apt.txt"
+    log_info "Installing packages from packages/apt.txt"
     xargs -a "$DOTFILES_DIR/packages/apt.txt" sudo apt install -y
 }
 
@@ -54,9 +34,8 @@ install_apt_packages() {
 #######################################
 
 install_pip_packages() {
-    log "Python tooling"
+    log_info "Setting up Python tooling"
 
-    log_step "Upgrading pip (user scope)"
     python3 -m pip install --user --upgrade pip
 }
 
@@ -65,26 +44,26 @@ install_pip_packages() {
 #######################################
 
 install_nvm() {
-    log "Node.js (NVM)"
+    log_info "Setting up Node.js via NVM"
 
     if [ ! -d "$HOME/.nvm" ]; then
-        log_step "Installing NVM"
+        log_info "Installing NVM"
         curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
     else
-        log_skip "NVM already installed"
+        log_warn "NVM already installed"
     fi
 
     export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    #shellcheck disable=SC1090
+    source "$NVM_DIR/nvm.sh"
 
     if ! nvm ls "$NODE_VERSION" >/dev/null 2>&1; then
-        log_step "Installing Node.js v$NODE_VERSION"
+        log_info "Installing Node.js v$NODE_VERSION"
         nvm install "$NODE_VERSION"
     else
-        log_skip "Node.js v$NODE_VERSION already installed"
+        log_warn "Node.js v$NODE_VERSION already installed"
     fi
 
-    log_step "Setting Node.js default version"
     nvm alias default "$NODE_VERSION"
 }
 
@@ -94,10 +73,10 @@ install_nvm() {
 #######################################
 
 install_go() {
-    log "Go"
+    log_info "Setting up Go"
 
     if command_exists go; then
-        log_skip "Go already installed ($(go version))"
+        log_warn "Go already installed: $(go version)"
         return
     fi
 
@@ -106,24 +85,24 @@ install_go() {
         x86_64) GO_ARCH="amd64" ;;
         aarch64) GO_ARCH="arm64" ;;
         *)
-            echo "Unsupported architecture: $ARCH"
+            log_error "Unsupported architecture: $ARCH"
             exit 1
             ;;
     esac
 
-    GO_TARBALL="go${GO_VERSION}.linux-${GO_ARCH}.tar.gx"
+    GO_TARBALL="go${GO_VERSION}.linux-${GO_ARCH}.tar.gz"
     GO_URL="https://go.dev/dl/${GO_TARBALL}"
 
-    log_step "Downloading Go ${GO_VERSION}"
+    log_info "Downloading Go ${GO_VERSION}"
     curl -LO "$GO_URL"
 
-    log_step "Installing to ${GO_INSTALL_DIR}"
+    log_info "Installing Go to ${GO_INSTALL_DIR}"
     sudo rm -rf "$GO_INSTALL_DIR"
     sudo tar -C /usr/local -xzf "$GO_TARBALL"
 
     rm "$GO_TARBALL"
 
-    log_step "Go installed successfully"
+    log_info "Go installed successfully"
 }
 
 #######################################
@@ -131,13 +110,12 @@ install_go() {
 #######################################
 
 install_rust() {
-    log "Rust toolchain"
+    log_info "Setting up Rust toolchain"
 
-    if [ ! -f "$HOME/.cargo/bin/rustc" ]; then
-        log_step "Installing Rust via rustup"
+    if [[ ! -f "$HOME/.cargo/bin/rustc" ]]; then
         curl https://sh.rustup.rs -sSf | sh -s -- -y
     else
-        log_skip "Rust already installed"
+        log_warn "Rust already installed"
     fi
 }
 
@@ -146,13 +124,12 @@ install_rust() {
 #######################################
 
 install_uv() {
-    log "uv (Python package manager)"
+    log_info "Setting up uv (Python package manager)"
 
     if ! command_exists uv; then
-        log_step "Installing uv"
         curl -LsSf https://astral.sh/uv/install.sh | sh
     else
-        log_skip "uv already installed"
+        log_warn "uv already installed"
     fi
 }
 
@@ -161,13 +138,12 @@ install_uv() {
 #######################################
 
 install_haskell() {
-    log "Haskell toolchain (ghcup)"
+    log_info "Setting up Haskell toolchain (ghcup)"
 
-    if [ ! -d "$HOME/.ghcup" ]; then
-        log_step "Installing ghcup"
+    if [[ ! -d "$HOME/.ghcup" ]]; then
         curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh -s -- -y
     else
-        log_skip "ghcup already installed"
+        log_warn "ghcup already installed"
     fi
 }
 
@@ -176,18 +152,13 @@ install_haskell() {
 #######################################
 
 link_dotfiles() {
-    log "Dotfiles"
+    log_info "Linking dotfiles"
 
     mkdir -p "$HOME/.config" "$HOME/.local/bin"
 
-    log_step "Linking .bashrc"
-    ln -sf "$DOTFILES_DIR/bash/.bashrc" "$HOME/.bashrc"
-    
-    log_step "Linking .bash_aliases"
-    ln -sf "$DOTFILES_DIR/bash/.bash_aliases" "$HOME/.bash_aliases"
-
-    log_step "Linking .gitconfig"
-    ln -sf "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+    ln -sf "$SCRIPT_DIR/bash/.bashrc" "$HOME/.bashrc"
+    ln -sf "$SCRIPT_DIR/bash/.bash_aliases" "$HOME/.bash_aliases"
+    ln -sf "$SCRIPT_DIR/git/.gitconfig" "$HOME/.gitconfig"
 }
 
 #######################################
@@ -195,7 +166,7 @@ link_dotfiles() {
 #######################################
 
 main() {
-    log "Starting environment bootstrap"
+    log_info "Starting environment bootstrap"
 
     install_apt_packages
     install_pip_packages
@@ -208,8 +179,8 @@ main() {
 
     link_dotfiles
 
-    log "Environment setup complete."
-    echo "Restart your shell or run: exec bash"
+    log_info "Environment setup complete."
+    log_info "Restart your shell or run: exec bash"
 }
 
 main "$@"
