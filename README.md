@@ -7,7 +7,7 @@ It is designed ot allow a clean machine to be brought to parity with an existing
 - version-pinned tooling
 - tracked dotfiles
 - automated installation scripts
-- verification tooling
+- verification and health-check tooling
 
 The setup supports development in:
 
@@ -63,7 +63,7 @@ cd dotfiles
 ## 3. Make Scripts Executable
 
 ```bash
-chmod +x install.sh verify.sh
+chmod +x install.sh verify.sh update.sh doctor.sh
 ```
 
 ## 4. Run the Installer
@@ -105,7 +105,7 @@ This ensures:
 
 ## 6. Verify the Environment
 
-Run:
+### 6.1 Quick Verification
 
 ```bash
 ./verify.sh
@@ -120,13 +120,19 @@ This script checks:
 
 **Do not proceed until verification passes.**
 
+### 6.2 Full Health Check
+
+```bash
+./doctor.sh
+```
+
+`doctor.sh` provides a **comprehensive developer health check**, including warnings about missing tools, mismatched versions, or missing PATH entries.
+
 ## 7. VS Code Integration
 
 ### 7.1 Install VS Code on Windows
 
-Download from:
-
-[https://code.visualstudio.com/](https://code.visualstudio.com/)
+Download from: [https://code.visualstudio.com/](https://code.visualstudio.com/)
 
 ### 7.2 Install WSL Extension
 
@@ -149,9 +155,7 @@ VS Code will reopen connected directly to WSL.
 
 ### 8.1 Install Docker Desktop (Windows)
 
-Download:
-
-[https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+Download: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
 
 During setup:
 
@@ -226,7 +230,7 @@ If you use HTTPS instead of SSH:
 git config --global credential.helper store
 ```
 
-> This stores credentials unencrypted. SSH is strongly recommended instead.
+> :warning: This stores credentials unencrypted. SSH is strongly recommended instead.
 
 ## 12. Windows ↔ WSL Downloads Linking (Optional)
 
@@ -265,6 +269,8 @@ alias gc='git commit'
 alias gp='git push'
 alias dcu='docker compose up'
 alias dcd='docker compose down'
+alias doctor='./doctor.sh'
+alias verify='./verify.sh'
 ```
 
 Changes are applied automatically via `.bashrc`.
@@ -274,8 +280,8 @@ Changes are applied automatically via `.bashrc`.
 ### Python
 
 - `python` → `python3`
-- project isolation via `uv`
-- no global pip pollution
+- Project isolation via `uv`
+- No global pip pollution
 
 ### Java
 
@@ -296,7 +302,7 @@ Changes are applied automatically via `.bashrc`.
 ### Haskell
 
 - Managed via ghcup
-- GHC, cabal, stack supported
+- GHC, Cabal, Stack supported
 
 ## 15. Updating the Environment
 
@@ -304,11 +310,16 @@ To update tools:
 
 ```bash
 git pull
-./install.sh
+./update.sh
 ./verify.sh
+./doctor.sh
 ```
 
-The installer is **idempotent** - safe to rerun.
+- `update.sh` safely updates system packages, Node, Rust, Haskell, Python tooling, and re-links dotfiles.
+- `verify.sh` confirms everything is installed and accessible.
+- `doctor.sh` highlights warnings, version mismatches, and PATH issues.
+
+The installer and update scripts are **idempotent** - safe to rerun multiple times.
 
 ## 16. Repository Structure
 
@@ -322,7 +333,9 @@ The installer is **idempotent** - safe to rerun.
 ├── packages/
 │   └── apt.txt
 ├── install.sh
+├── update.sh
 ├── verify.sh
+├── doctor.sh
 └── README.md
 ```
 
