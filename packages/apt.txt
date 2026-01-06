@@ -1,26 +1,60 @@
+# -------------------------------------------------
 # Core build tools
+# -------------------------------------------------
 build-essential
 make
+pkg-config
+cmake
+ninja-build
 
+# -------------------------------------------------
 # Version control & networking
+# -------------------------------------------------
 git
 curl
 wget
 ca-certificates
+openssh-client
 
-# Python
+# -------------------------------------------------
+# Python (system interpreter + tooling)
+# -------------------------------------------------
 python3
 python3-pip
 python3-venv
+python-is-python3
 
-# Java
+# -------------------------------------------------
+# Java & JVM ecosystem
+# -------------------------------------------------
 openjdk-21-jdk
+maven
+gradle
 
-# Terminal tools
+# -------------------------------------------------
+# C# / .NET
+# -------------------------------------------------
+dotnet-sdk-8.0
+
+# -------------------------------------------------
+# Terminal & editor tooling
+# -------------------------------------------------
 tmux
-
-# Editor support
 neovim
+fzf
+ripgrep
 
+# -------------------------------------------------
+# Containers & virtualisation
+# -------------------------------------------------
+docker.io
+docker-compose-plugin
+
+# -------------------------------------------------
 # Utilities
+# -------------------------------------------------
 unzip
+zip
+jq
+tree
+htop
