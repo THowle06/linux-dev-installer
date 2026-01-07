@@ -1,34 +1,29 @@
 #!/usr/bin/env bash
 
-#######################################
-# Colour-aware logging utilities
-#######################################
-
-# Enable colours only if stdout is a terminal
+# Colours (only if stdout is a terminal)
 if [[ -t 1 ]]; then
-    COLOR_RESET="\033[0m"
-    COLOR_INFO="\033[1;34m"     # Blue
-    COLOR_WARN="\033[1;33m"     # Yellow
-    COLOR_ERROR="\033[1;31m"    # Red
+    BLUE="\033[1;34m"
+    GREEN="\033[1;32m"
+    YELLOW="\033[1;33m"
+    RED="\033[1;31m"
+    BOLD="\033[1m"
+    RESET="\033[0m"
 else
-    COLOR_RESET=""
-    COLOR_INFO=""
-    COLOR_WARN=""
-    COLOR_ERROR=""
+    BLUE="" GREEN="" YELLOW="" RED="" BOLD="" RESET=""
 fi
 
 log_info() {
-    echo -e "\n${COLOR_INFO}[INFO]${COLOR_RESET}  $1"
+    echo -e "\n${BLUE}${BOLD}==>${RESET} $*"
+}
+
+log_ok() {
+    echo -e "${GREEN}✔${RESET} $*"
 }
 
 log_warn() {
-    echo -e "${COLOR_WARN}[WARN]${COLOR_RESET}  $1"
+    echo -e "${YELLOW}[WARN]${RESET} $*"
 }
 
 log_error() {
-    echo -e "${COLOR_ERROR}[ERROR]${COLOR_RESET} $1" >&2
-}
-
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
+    echo -e "${RED}[ERROR]${RESET} $*" >&2
 }
