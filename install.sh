@@ -6,15 +6,8 @@ set -euo pipefail
 #######################################
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/scripts/lib/logging.sh"
-
-#######################################
-# Configuration
-#######################################
-
-NODE_VERSION="24.12.0"
-GO_VERSION="1.25.5"
-GO_INSTALL_DIR="/usr/local/go"
+# shellcheck disable-SC1091
+source "$SCRIPT_DIR/scripts/lib/bootstrap.sh"
 
 #######################################
 # APT Packages
