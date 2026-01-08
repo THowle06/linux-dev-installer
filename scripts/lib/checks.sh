@@ -10,7 +10,7 @@ check_tool() {
         version="$(get_version_line "$cmd")"
 
         if [[ -n "$expected" && "$version" != *"$expected"* ]]; then
-            log_warn "$node version mismmatch: $version (expected $expected)"
+            log_warn "$name version mismatch: $version (expected $expected)"
         else
             log_ok "$name OK ($version)"
         fi
