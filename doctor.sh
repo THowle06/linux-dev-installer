@@ -9,17 +9,11 @@ set -euo pipefail
 # Resolve repository root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-source "$SCRIPT_DIR/scripts/lib/logging.sh"
-source "$SCRIPT_DIR/scripts/lib/utils.sh"
+# Use central bootstrap (logging, utils, config, checks) and tool registry
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/scripts/lib/bootstrap.sh"
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/scripts/registry/tools.sh"
-
-#######################################
-# Configuration (override via env)
-#######################################
-
-NODE_VERSION="${NODE_VERSION:-24.12.0}"
-GO_VERSION="${GO_VERSION:-1.25.5}"
-JAVA_MAJOR="${JAVA_MAJOR:-21}"
 
 #######################################
 # State
@@ -120,7 +114,7 @@ done
 
 section "PATH sanity"
 check_path "Node (NVM)" "$HOME/.nvm/versions/node/v$NODE_VERSION/bin"
-check_path "Go" "/usr/local/go/bin"
+check_path "Go" "$GO_INSTALL_DIR/bin"
 check_path "Rust (Cargo)" "$HOME/.cargo/bin"
 check_path "GHCup" "$HOME/.ghcup/bin"
 
