@@ -8,8 +8,10 @@ set -euo pipefail
 
 # Resolve repository root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 source "$SCRIPT_DIR/scripts/lib/logging.sh"
 source "$SCRIPT_DIR/scripts/lib/utils.sh"
+source "$SCRIPT_DIR/scripts/registry/tools.sh"
 
 #######################################
 # Configuration (override via env)
@@ -74,45 +76,47 @@ section() {
 #######################################
 
 section "Core system tools"
-check_tool "GCC" gcc "gcc"
-check_tool "Make" make
-check_tool "Git" git "git"
-check_tool "Curl" curl "curl"
-check_tool "Wget" wget "Wget"
+for tool in "${TOOLS_CORE[@]}"; do
+    check_tool "$tool" "$tool"
+done
 
 section "Python"
-check_tool "Python3" python3
-check_tool "pip3" pip "pip"
-check_tool "uv" uv
+for tool in "${TOOLS_PYTHON[@]}"; do
+    check_tool "$tool" "$tool"
+done
 
 section "Node.js"
-check_tool "Node.js" node "v$NODE_VERSION"
+check_tool "node" node "v$NODE_VERSION"
 check_tool "npm" npm
 
 section "Go"
-check_tool "Go" go "go$GO_VERSION"
+check_tool "go" go "go$GO_VERSION"
 
 section "Rust"
-check_tool "Rustc" rustc
-check_tool "Cargo" cargo
+for tool in "${TOOLS_RUST[@]}"; do
+    check_tool "$tool" "$tool"
+done
 
 section "Java"
-check_tool "Java" java "$JAVA_MAJOR"
-check_tool "Javac" javac
-check_tool "Maven" mvn
-check_tool "Gradle" gradle
+check_tool "java" java "$JAVA_MAJOR"
+check_tool "javac" javac
+check_tool "mvn" mvn
+check_tool "gradle" gradle
 
 section "Haskell"
-check_tool "GHCup" ghcup
-check_tool "GHC" ghc
-check_tool "Cabal" cabal
+for tool in "${TOOLS_HASKELL[@]}"; do
+    check_tool "$tool" "$tool"
+done
 
 section "Containers"
-check_tool "Docker" docker
+for tool in "${TOOLS_CONTAINERS[@]}"; do
+    check_tool "$tool" "$tool"
+done
 
 section "Editors & Terminal"
-check_tool "Neovim" nvim
-check_tool "Tmux" tmux
+for tool in "${TOOLS_EDITORS[@]}"; do
+    check_tool "$tool" "$tool"
+done
 
 section "PATH sanity"
 check_path "Node (NVM)" "$HOME/.nvm/versions/node/v$NODE_VERSION/bin"
