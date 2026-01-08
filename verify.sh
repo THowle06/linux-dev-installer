@@ -86,9 +86,9 @@ main() {
     else
         log_warn "Verification complete - some tools are missing:"
         for tool in "${MISSING_TOOLS[@]}"; do
-            echo "  - $tool"
+            log_warn "  - $tool"
         done
-        log_warn "Consider running /.install.sh or update.sh to fix missing tools"
+        log_warn "Consider running ./install.sh or ./update.sh to fix missing tools"
         exit 1
     fi
 }
