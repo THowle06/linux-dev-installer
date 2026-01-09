@@ -6,7 +6,7 @@ set -euo pipefail
 #######################################
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck disable-SC1091
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/scripts/lib/bootstrap.sh"
 
 #######################################
@@ -47,7 +47,7 @@ install_nvm() {
     fi
 
     export NVM_DIR="$HOME/.nvm"
-    #shellcheck disable=SC1090
+    # shellcheck disable=SC1090
     source "$NVM_DIR/nvm.sh"
 
     if ! nvm ls "$NODE_VERSION" >/dev/null 2>&1; then
@@ -149,9 +149,9 @@ link_dotfiles() {
 
     mkdir -p "$HOME/.config" "$HOME/.local/bin"
 
-    ln -sf "$SCRIPT_DIR/bash/.bashrc" "$HOME/.bashrc"
-    ln -sf "$SCRIPT_DIR/bash/.bash_aliases" "$HOME/.bash_aliases"
-    ln -sf "$SCRIPT_DIR/git/.gitconfig" "$HOME/.gitconfig"
+    ln -sf "$DOTFILES_DIR/bash/.bashrc" "$HOME/.bashrc"
+    ln -sf "$DOTFILES_DIR/bash/.bash_aliases" "$HOME/.bash_aliases"
+    ln -sf "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
 }
 
 #######################################

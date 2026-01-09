@@ -13,7 +13,7 @@ check_tool() {
     local version_line
     version_line="$(get_version_line "$cmd")"
 
-    if [[ -n "$expected" && "$version_line" != *"$expected"* ]];
+    if [[ -n "$expected" && "$version_line" != *"$expected"* ]]; then
         log_warn "$name present but version mismatch: expected contains \"$expected\", got \"$version_line\""
         return 1
     fi
