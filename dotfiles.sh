@@ -37,9 +37,12 @@ Commands:
     doctor              Full health check
     help                Show this help
 
-Options (reserved for future):
+Options:
     --only <cats>       Comma-separated categories to include
     --exclude <cats>    Comma-separated categories to skip
+
+Available categories:
+    python, node, go, rust, haskell, editors
 
 Examples:
     ./dotfiles.sh install
