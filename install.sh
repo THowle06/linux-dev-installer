@@ -10,6 +10,41 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/scripts/lib/bootstrap.sh"
 
 #######################################
+# Category filtering
+#######################################
+
+category_enabled() {
+    local cat="$1"
+
+    # Include list takes priority
+    if [[ -n "${FILTER_INCLUDE:-}" ]]; then
+        IFS=',' read -ra inc <<<"$FILTER_INCLUDE"
+        for i in "${inc[@]}"; do
+            [[ "$i" == "$cat" ]] && return 0
+        done
+        return 1
+    fi
+
+    if [[ -n "${FILTER_EXCLUDE:-}" ]]; then
+        IFS=',' read -ra exc <<<"$FILTER_EXCLUDE"
+        for e in "${exc[@]}"; do
+            [[ "$e" == "$cat" ]] && return 1
+        done
+    fi
+
+    return 0
+}
+
+run_category() {
+    local cat="$1"; shift
+    if category_enabled "$cat"; then
+        "$@"
+    else
+        log_info "Skipping ${cat} (filtered)"
+    fi
+}
+
+#######################################
 # APT Packages
 #######################################
 
@@ -193,15 +228,13 @@ main() {
     log_info "Starting environment bootstrap"
 
     install_apt_packages
-    install_pip_packages
-
-    install_nvm
-    install_go
-    install_rust
-    install_uv
-    install_haskell
-
-    link_dotfiles
+    run_category python install_pip_packages
+    run_category node       install_nvm
+    run_category go         install_go
+    run_category rust       install_rust
+    run_category python     install_uv
+    run_category haskell    install_haskell
+    run_category editors    link_dotfiles
 
     log_info "Installation complete! Please restart your shell or run: source ~/.bashrc"
 }

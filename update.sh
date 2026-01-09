@@ -10,6 +10,41 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/scripts/lib/bootstrap.sh"
 
 #######################################
+# Category filtering
+#######################################
+
+category_enabled() {
+    local cat="$1"
+
+    # Include list takes priority
+    if [[ -n "${FILTER_INCLUDE:-}" ]]; then
+        IFS=',' read -ra inc <<<"$FILTER_INCLUDE"
+        for i in "${inc[@]}"; do
+            [[ "$i" == "$cat" ]] && return 0
+        done
+        return 1
+    fi
+
+    if [[ -n "${FILTER_EXCLUDE:-}" ]]; then
+        IFS=',' read -ra exc <<<"$FILTER_EXCLUDE"
+        for e in "${exc[@]}"; do
+            [[ "$e" == "$cat" ]] && return 1
+        done
+    fi
+
+    return 0
+}
+
+run_category() {
+    local cat="$1"; shift
+    if category_enabled "$cat"; then
+        "$@"
+    else
+        log_info "Skipping ${cat} (filtered)"
+    fi
+}
+
+#######################################
 # System Updates
 #######################################
 
@@ -112,13 +147,15 @@ relink_dotfiles() {
 #######################################
 
 main() {
+    log_info "Starting updates"
+
     update_system
-    update_node
-    update_rust
-    update_go
-    update_haskell
-    update_python
-    relink_dotfiles
+    run_category node       update_node
+    run_category rust       update_rust
+    run_category go         update_go
+    run_category haskell    update_haskell
+    run_category python     update_python
+    run_category editors    relink_dotfiles
 
     log_info "Update complete. Restart shell if needed."
 }
