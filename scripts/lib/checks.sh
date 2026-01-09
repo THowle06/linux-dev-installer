@@ -5,18 +5,23 @@ check_tool() {
     local cmd="$2"
     local expected="${3:-}"
 
-    if command_exists "$cmd"; then
-        local version
-        version="$(get_version_line "$cmd")"
-
-        if [[ -n "$expected" && "$version" != *"$expected"* ]]; then
-            log_warn "$name version mismatch: $version (expected $expected)"
-        else
-            log_ok "$name OK ($version)"
-        fi
-    else
-        log_error "$name is not installed"
+    if ! command_exists "$cmd"; then
+        log_warn "$name not found (command: $cmd)"
         return 1
+    fi
+
+    local version_line
+    version_line="$(get_version_line "$cmd")"
+
+    if [[ -n "$expected" && "$version_line" != *"$expected"* ]];
+        log_warn "$name present but version mismatch: expected contains \"$expected\", got \"$version_line\""
+        return 1
+    fi
+
+    if [[ -n "$version_line" ]]; then
+        log_ok "$name OK ($version_line)"
+    else
+        log_ok "$name OK"
     fi
 }
 
@@ -28,5 +33,6 @@ check_path() {
         log_ok "$label in PATH"
     else
         log_warn "$label missing from PATH ($path)"
+        return 1
     fi
 }
