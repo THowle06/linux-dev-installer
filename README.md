@@ -63,13 +63,13 @@ cd dotfiles
 ## 3. Make Scripts Executable
 
 ```bash
-chmod +x install.sh verify.sh update.sh doctor.sh
+chmod +x dotfiles.sh install.sh verify.sh update.sh doctor.sh
 ```
 
 ## 4. Run the Installer
 
 ```bash
-./install.sh
+./dotfiles.sh install
 ```
 
 This script will:
@@ -108,12 +108,12 @@ This ensures:
 ### 6.1 Quick Verification
 
 ```bash
-./verify.sh
+./dotfiles.sh verify
 ```
 
 This script checks:
 
-- tools presence
+- tool presence across all categories
 - correct versions
 - PATH resolution
 - language runtimes
@@ -123,25 +123,74 @@ This script checks:
 ### 6.2 Full Health Check
 
 ```bash
-./doctor.sh
+./dotfiles.sh doctor
 ```
 
 `doctor.sh` provides a **comprehensive developer health check**, including warnings about missing tools, mismatched versions, or missing PATH entries.
 
-## 7. VS Code Integration
+## 7. CLI Reference
 
-### 7.1 Install VS Code on Windows
+The `dotfiles.sh` script provides a unified entrypoint:
+
+```bash
+./dotfiles.sh <command> [options]
+```
+
+### Commands
+
+| Command   | Description                        |
+| --------- | ---------------------------------- |
+| `install` | Run full installation              |
+| `update`  | Update all tools                   |
+| `verify`  | Quick verification check           |
+| `doctor`  | Full health check with diagnostics |
+| `help`    | Show usage information             |
+
+### Examples
+
+```bash
+# Full installation
+./dotfiles.sh install
+
+# Quick verification
+./dotfiles.sh verify
+
+# Detailed health check
+./dotfiles.sh doctor
+
+# Update existing tools
+./dotfiles.sh update
+
+# Show help
+./dotfiles.sh help
+```
+
+### Future Options (reserved)
+
+The CLI is designed to support future filtering:
+
+```bash
+# Install only specific categories (planned)
+./dotfiles.sh install --only python,node,rust
+
+# Exclude categories (planned)
+./dotfiles.sh install --exclude haskell,java
+```
+
+## 8. VS Code Integration
+
+### 8.1 Install VS Code on Windows
 
 Download from: [https://code.visualstudio.com/](https://code.visualstudio.com/)
 
-### 7.2 Install WSL Extension
+### 8.2 Install WSL Extension
 
 In VS Code (Windows):
 
 - Open Extensions
 - Install "**WSL**" by Microsoft
 
-### 7.3 Launch WSL Workspace
+### 8.3 Launch WSL Workspace
 
 From WSL:
 
@@ -151,9 +200,9 @@ code .
 
 VS Code will reopen connected directly to WSL.
 
-## 8. Docker Setup (WSL)
+## 9. Docker Setup (WSL)
 
-### 8.1 Install Docker Desktop (Windows)
+### 9.1 Install Docker Desktop (Windows)
 
 Download: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
 
@@ -162,14 +211,14 @@ During setup:
 - Enable **WSL 2 backend**
 - Enable integration for your Ubuntu distro
 
-### 8.2 Verify Docker
+### 9.2 Verify Docker
 
 ```bash
 docker --version
 docker run hello-world
 ```
 
-## 9. Git Configuration
+## 10. Git Configuration
 
 Git configuration is symlinked from this repository.
 
@@ -179,9 +228,9 @@ Check:
 git config --list
 ```
 
-## 10. SSH Keys (GitLab)
+## 11. SSH Keys (GitLab)
 
-### 10.1 Generate SSH Key
+### 11.1 Generate SSH Key
 
 ```bash
 ssh-keygen -t ed25519 -C "your.email@example.com"
@@ -189,14 +238,14 @@ ssh-keygen -t ed25519 -C "your.email@example.com"
 
 Press Enter to accept defaults.
 
-### 10.2 Start SSH Agent
+### 11.2 Start SSH Agent
 
 ```bash
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 ```
 
-### 10.3 Add Key to GitLab
+### 11.3 Add Key to GitLab
 
 Copy public key:
 
@@ -210,7 +259,7 @@ Go to:
 - Paste the key
 - Save
 
-### 10.4 Test Connection
+### 11.4 Test Connection
 
 ```bash
 ssh -T git@gitlab.com
@@ -222,7 +271,7 @@ Expected output:
 Welcome to GitLab, @username!
 ```
 
-## 11. HTTPS Authentication (Optional)
+## 12. HTTPS Authentication (Optional)
 
 If you use HTTPS instead of SSH:
 
@@ -232,9 +281,9 @@ git config --global credential.helper store
 
 > :warning: This stores credentials unencrypted. SSH is strongly recommended instead.
 
-## 12. Windows ↔ WSL Downloads Linking (Optional)
+## 13. Windows ↔ WSL Downloads Linking (Optional)
 
-### 12.1 Create Windows Folder
+### 13.1 Create Windows Folder
 
 On Windows:
 
@@ -242,7 +291,7 @@ On Windows:
 C:\Users\<your-user>\WSL-Downloads
 ```
 
-### 12.2 Link in WSL
+### 13.2 Link in WSL
 
 ```bash
 ln -s /mnt/c/Users/<your-user>/WSl-Downloads ~/Downloads
@@ -250,7 +299,7 @@ ln -s /mnt/c/Users/<your-user>/WSl-Downloads ~/Downloads
 
 This allows seamless file transfer between Windows and WSL.
 
-## 13. Bash Aliases
+## 14. Bash Aliases
 
 Aliases are stored in:
 
@@ -258,24 +307,80 @@ Aliases are stored in:
 bash/.bash_aliases
 ```
 
-Examples you may enable:
+Examples included:
 
 ```bash
-alias ll='ls -alF'
-alias la='ls -A'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias g='git'
 alias gs='git status'
-alias gl='git log --oneline --graph --decorate'
-alias gc='git commit'
-alias gp='git push'
-alias dcu='docker compose up'
-alias dcd='docker compose down'
-alias doctor='./doctor.sh'
-alias verify='./verify.sh'
+alias ga='git add'
+alias path='echo -e ${PATH//:/\\n}'
 ```
 
 Changes are applied automatically via `.bashrc`.
 
-## 14. Language-Specific Notes
+## 15. Updating the Environment
+
+To update tools:
+
+```bash
+git pull
+./dotfiles.sh update
+./dotfiles.sh verify
+./dotfiles.sh doctor
+```
+
+- `update` safely updates system packages, Node, Rust, Haskell, Python tooling, and re-links dotfiles
+- `verify` confirms everything is installed and accessible
+- `doctor` highlights warnings, version mismatches, and PATH issues
+
+The installer and update scripts are **idempotent** - safe to rerun multiple times.
+
+## 16. Repository Structure
+
+```text
+.
+├── bash/
+│   ├── .bashrc
+│   └── .bash_aliases
+├── git/
+│   └── .gitconfig
+├── packages/
+│   └── apt.txt
+├── scripts/
+│   ├── lib/
+│   │   ├── bootstrap.sh      # Central bootstrap loader
+│   │   ├── logging.sh        # Consistent logging helpers
+│   │   ├── utils.sh          # Command existence checks
+│   │   ├── config.sh         # Version configuration
+│   │   └── checks.sh         # Tool verification logic
+│   └── registry/
+│       └── tools.sh          # Tool registry (single source of truth)
+├── dotfiles.sh               # CLI entrypoint
+├── install.sh                # Installation script
+├── update.sh                 # Update script
+├── verify.sh                 # Quick verification
+├── doctor.sh                 # Full health check
+└── README.md
+```
+
+## 17. Tool Categories
+
+The tool registry (`scripts/registry/tools.sh`) organises tools into categories:
+
+- **Core**: gcc, make, git, curl, wget
+- **Python**: python3, pip, uv
+- **Node.js**: node, npm (via NVM)
+- **Go**: go
+- **Rust**: rustc, cargo (via rustup)
+- **Java**: java, javac, mvn, gradle
+- **Haskell**: ghcup, ghc, cabal
+- **Containers**: docker
+- **Editors/Terminal**: nvim, tmux
+
+## 18. Language-Specific Notes
 
 ### Python
 
@@ -291,60 +396,70 @@ Changes are applied automatically via `.bashrc`.
 
 ### Go
 
-- Installed from official binaries
-- Version pinned in install script
+- Installed from official binaries (version: 1.25.5)
+- Architecture-aware (amd64/arm64)
+- Version pinned in `scripts/lib/config.sh`
 
 ### Rust
 
 - Managed via rustup
 - Stable toolchain
+- Cargo in PATh after shell restart
 
 ### Haskell
 
 - Managed via ghcup
 - GHC, Cabal, Stack supported
+- Optional components configurable during install
 
-## 15. Updating the Environment
+### Node.js
 
-To update tools:
+- Managed via NVM (version: 24.12.0)
+- Multiple versions supported
+- Default version set automatically
+
+## 19. Troubleshooting
+
+### Common Issues
+
+**Tools not found after install:**
 
 ```bash
-git pull
-./update.sh
-./verify.sh
-./doctor.sh
+# Restart shell to load new PATH entries
+exec bash
 ```
 
-- `update.sh` safely updates system packages, Node, Rust, Haskell, Python tooling, and re-links dotfiles.
-- `verify.sh` confirms everything is installed and accessible.
-- `doctor.sh` highlights warnings, version mismatches, and PATH issues.
+**Permission denied on scripts:**
 
-The installer and update scripts are **idempotent** - safe to rerun multiple times.
-
-## 16. Repository Structure
-
-```text
-.
-├── bash/
-│   ├── .bashrc
-│   └── .bash_aliases
-├── git/
-│   └── .gitconfig
-├── packages/
-│   └── apt.txt
-├── install.sh
-├── update.sh
-├── verify.sh
-├── doctor.sh
-└── README.md
+```bash
+chmod +x dotfiles.sh install.sh update.sh verify.sh doctor.sh
 ```
 
-## 17. Philosophy
+**Docker not accessible:**
+
+- Ensure Docker Desktop is running on Windows
+- Check WSL integration is enabled in Docker Desktop settings
+
+**NVM command not found:**
+
+```bash
+# Manually source NVM
+source ~/.nvm/nvm.sh
+```
+
+**Version mismatches:**
+
+- Check `scripts/lib/config.sh` for expected versions
+- Run `./dotfiles.sh doctor` for detailed diagnostics
+
+## 20. Philosophy
 
 This setup prioritises:
 
-- reproducibility
-- explicit versioning
-- minimal global state
-- portability across machines
-- professional tooling parity
+- **Reproducibility**: exact versions, scripted setup
+- **Explicit versioning**: single source of truth in config
+- **Minimal global state**: language-specific version managers
+- **Portability**: works across machines and fresh WSL installs
+- **Professional tooling parity**: matches production environments
+- **Idempotency**: safe to rerun scripts multiple times
+- **Consistency**: unified logging and error handling
