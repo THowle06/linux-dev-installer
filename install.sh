@@ -20,6 +20,8 @@ install_apt_packages() {
 
     log_info "Installing packages from packages/apt.txt"
     xargs -a "$DOTFILES_DIR/packages/apt.txt" sudo apt install -y
+
+    log_ok "System packages installed successfully"
 }
 
 #######################################
@@ -30,6 +32,8 @@ install_pip_packages() {
     log_info "Setting up Python tooling"
 
     python3 -m pip install --user --upgrade pip
+
+    log_ok "Python tooling updated successfully"
 }
 
 #######################################
@@ -58,6 +62,8 @@ install_nvm() {
     fi
 
     nvm alias default "$NODE_VERSION"
+
+    log_ok "Node.js v$NODE_VERSION configured successfully"
 }
 
 
@@ -95,7 +101,7 @@ install_go() {
 
     rm "$GO_TARBALL"
 
-    log_info "Go installed successfully"
+    log_ok "Go ${GO_VERSION} installed successfully"
 }
 
 #######################################
@@ -105,11 +111,18 @@ install_go() {
 install_rust() {
     log_info "Setting up Rust toolchain"
 
-    if [[ ! -f "$HOME/.cargo/bin/rustc" ]]; then
-        curl https://sh.rustup.rs -sSf | sh -s -- -y
-    else
-        log_warn "Rust already installed"
+    if command_exists rustc; then
+        log_warn "Rust already installed: $(rustc --version)"
+        return
     fi
+
+    log_info "Installing Rust via rustup"
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+    # shellcheck disable=SC1091
+    source "$HOME/.cargo/env"
+
+    log_ok "Rust installed successfully"
 }
 
 #######################################
@@ -119,11 +132,15 @@ install_rust() {
 install_uv() {
     log_info "Setting up uv (Python package manager)"
 
-    if ! command_exists uv; then
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-    else
-        log_warn "uv already installed"
+    if command_exists uv; then
+        log_warn "uv already installed: $(uv --version)"
+        return
     fi
+
+    log_info "Installing uv"
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    log_ok "uv installed successfully"
 }
 
 #######################################
@@ -131,13 +148,25 @@ install_uv() {
 #######################################
 
 install_haskell() {
-    log_info "Setting up Haskell toolchain (ghcup)"
+    log_info "Setting up Haskell via GHCup"
 
-    if [[ ! -d "$HOME/.ghcup" ]]; then
-        curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh -s -- -y
-    else
-        log_warn "ghcup already installed"
+    if command_exists ghcup; then
+        log_warn "GHCup already installed"
+        return
     fi
+
+    log_info "Installing GHCup"
+    curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+
+    # shellcheck disable=SC1091
+    source "$HOME/.ghcup/env"
+
+    log_info "Installing GHC, Cabal, and Stack"
+    ghcup install ghc recommended
+    ghcup install cabal recommended
+    ghcup install stack recommended
+
+    log_ok "Haskell toolchain installed successfully"
 }
 
 #######################################
@@ -152,6 +181,8 @@ link_dotfiles() {
     ln -sf "$DOTFILES_DIR/bash/.bashrc" "$HOME/.bashrc"
     ln -sf "$DOTFILES_DIR/bash/.bash_aliases" "$HOME/.bash_aliases"
     ln -sf "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+
+    log_ok "Dotfiles linked successfully"
 }
 
 #######################################
@@ -172,8 +203,7 @@ main() {
 
     link_dotfiles
 
-    log_info "Environment setup complete."
-    log_info "Restart your shell or run: exec bash"
+    log_info "Installation complete! Please restart your shell or run: source ~/.bashrc"
 }
 
 main "$@"
