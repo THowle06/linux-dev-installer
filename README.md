@@ -152,6 +152,12 @@ The `dotfiles.sh` script provides a unified entrypoint:
 # Full installation
 ./dotfiles.sh install
 
+# Install only specific categories
+./dotfiles.sh install --only python,node,rust
+
+# Install everything except certain categories
+./dotfiles.sh install --exclude haskell,java
+
 # Quick verification
 ./dotfiles.sh verify
 
@@ -161,21 +167,34 @@ The `dotfiles.sh` script provides a unified entrypoint:
 # Update existing tools
 ./dotfiles.sh update
 
+# Update only specific categories
+./dotfiles.sh update --only node,rust
+
+# Update everything except certain categories
+./dotfiles.sh update --exclude haskell
+
 # Show help
 ./dotfiles.sh help
 ```
 
-### Future Options (reserved)
+### Options
 
-The CLI is designed to support future filtering:
+| Option             | Description                           |
+| ------------------ | ------------------------------------- |
+| `--only <cats>`    | Comma-separated categories to include |
+| `--exclude <cats>` | Comma-separated categories to skip    |
 
-```bash
-# Install only specific categories (planned)
-./dotfiles.sh install --only python,node,rust
+### Available Categories
 
-# Exclude categories (planned)
-./dotfiles.sh install --exclude haskell,java
-```
+- `python` - Python tooling (pip, uv)
+- `node` - Node.js via NVM
+- `go` - Go language
+- `rust` - Rust toolchain via rustup
+- `haskell` - Haskell toolchain via ghcup
+- `java` - Java (installed via APT, not filterable)
+- `editors` - Dotfile linking
+
+**Note:** APT packages are always installed (including Java, Docker, build tools).
 
 ## 8. VS Code Integration
 
@@ -338,6 +357,16 @@ git pull
 
 The installer and update scripts are **idempotent** - safe to rerun multiple times.
 
+You can also selectively update categories:
+
+```bash
+# Update only Node.js and Rust
+./dotfiles.sh update --only node,rust
+
+# Update everything except Haskell
+./dotfiles.sh update --exclude haskell
+```
+
 ## 16. Repository Structure
 
 ```text
@@ -463,3 +492,4 @@ This setup prioritises:
 - **Professional tooling parity**: matches production environments
 - **Idempotency**: safe to rerun scripts multiple times
 - **Consistency**: unified logging and error handling
+- **Flexibility**: selective installation and updates via category filtering
