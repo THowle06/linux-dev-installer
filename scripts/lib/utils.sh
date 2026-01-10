@@ -7,3 +7,16 @@ command_exists() {
 get_version_line() {
     "$1" --version 2>/dev/null | head -n 1 || true
 }
+
+backup_file() {
+    local file="$1"
+    local backup_dir="$HOME/.dotfiles-backup/$(date + %Y%m%d-%H%M%S)"
+
+    if [[ -e "$file" && ! -L "$FILE" ]]; then
+        mkdir -p "$backup_dir"
+        cp -a "$file" "$backup_dir/"
+        log_info "Backed up $(basename "$file") to $backup_dir"
+        return 0
+    fi
+    return 1
+}

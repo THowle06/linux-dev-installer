@@ -137,9 +137,16 @@ update_python() {
 relink_dotfiles() {
     log_info "Re-linking dotfiles"
 
+    # Backup existing files before re-linking
+    backup_file "$HOME/.bashrc"
+    backup_file "$HOME/.bash_aliases"
+    backup_file "$HOME/.gitconfig"
+
     ln -sf "$SCRIPT_DIR/bash/.bashrc" "$HOME/.bashrc"
     ln -sf "$SCRIPT_DIR/bash/.bash_aliases" "$HOME/.bash_aliases"
     ln -sf "$SCRIPT_DIR/git/.gitconfig" "$HOME/.gitconfig"
+
+    log_ok "Dotfiles re-linked"
 }
 
 #######################################

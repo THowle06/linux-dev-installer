@@ -213,6 +213,11 @@ link_dotfiles() {
 
     mkdir -p "$HOME/.config" "$HOME/.local/bin"
 
+    # Backup existing files before linking
+    backup_file "$HOME/.bashrc"
+    backup_file "$HOME/.bash-aliases"
+    backup_file "$HOME/.gitconfig"
+
     ln -sf "$DOTFILES_DIR/bash/.bashrc" "$HOME/.bashrc"
     ln -sf "$DOTFILES_DIR/bash/.bash_aliases" "$HOME/.bash_aliases"
     ln -sf "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
