@@ -35,6 +35,7 @@ Commands:
     update              Update tools
     verify              Quick verification
     doctor              Full health check
+    uninstall           Remove installed tools
     help                Show this help
 
 Options:
@@ -48,6 +49,7 @@ Examples:
     ./dotfiles.sh install
     ./dotfiles.sh install --only python,node
     ./dotfiles.sh update --exclude haskell,java
+    ./dotfiles.sh uninstall --confirm
 EOF
 }
 
@@ -67,6 +69,11 @@ case "$cmd" in
         ;;
     verify) exec "$SCRIPT_DIR/verify.sh" "$@" ;;
     doctor) exec "$SCRIPT_DIR/doctor.sh" "$@" ;;
+    uninstall)
+        parse_filters "$@"
+        export FILTER_INCLUDE FILTER_EXCLUDE
+        exec "$SCRIPT_DIR/uninstall.sh" "${FILTER_ARGS[@]}"
+        ;;
     help|-h|--help)
         usage
         ;;
