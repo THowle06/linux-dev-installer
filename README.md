@@ -82,6 +82,7 @@ This script will:
 - install Haskell via **ghcup**
 - install Python tooling (pip + uv)
 - install Docker tooling
+- back up existing dotfiles to `~/.dotfiles-backup/`
 - symlink tracked dotfiles
 
 You may be prompted for:
@@ -138,13 +139,14 @@ The `dotfiles.sh` script provides a unified entrypoint:
 
 ### Commands
 
-| Command   | Description                        |
-| --------- | ---------------------------------- |
-| `install` | Run full installation              |
-| `update`  | Update all tools                   |
-| `verify`  | Quick verification check           |
-| `doctor`  | Full health check with diagnostics |
-| `help`    | Show usage information             |
+| Command     | Description                        |
+| ----------- | ---------------------------------- |
+| `install`   | Run full installation              |
+| `update`    | Update all tools                   |
+| `verify`    | Quick verification check           |
+| `doctor`    | Full health check with diagnostics |
+| `uninstall` | Remove installed tools             |
+| `help`      | Show usage information             |
 
 ### Examples
 
@@ -173,16 +175,30 @@ The `dotfiles.sh` script provides a unified entrypoint:
 # Update everything except certain categories
 ./dotfiles.sh update --exclude haskell
 
+# Uninstall all tools (with confirmation)
+./dotfiles.sh uninstall
+
+# Uninstall only specific categories
+./dotfiles.sh uninstall --only node,rust --confirm
+
+# Uninstall and restore backed up dotfiles
+./dotfiles.sh uninstall --confirm --restore-backups
+
+# Uninstall everything except certain categories
+./dotfiles.sh uninstall --exclude haskell --confirm
+
 # Show help
 ./dotfiles.sh help
 ```
 
 ### Options
 
-| Option             | Description                           |
-| ------------------ | ------------------------------------- |
-| `--only <cats>`    | Comma-separated categories to include |
-| `--exclude <cats>` | Comma-separated categories to skip    |
+| Option              | Description                           |
+| ------------------- | ------------------------------------- |
+| `--only <cats>`     | Comma-separated categories to include |
+| `--exclude <cats>`  | Comma-separated categories to skip    |
+| `--confirm`         | Skip confirmation prompt (uninstall)  |
+| `--restore-backups` | Restore original dotfiles (uninstall) |
 
 ### Available Categories
 
@@ -196,20 +212,64 @@ The `dotfiles.sh` script provides a unified entrypoint:
 
 **Note:** APT packages are always installed (including Java, Docker, build tools).
 
-## 8. VS Code Integration
+## 8. Uninstalling Tools
 
-### 8.1 Install VS Code on Windows
+The uninstall script provides safe removal of installed tools:
+
+```bash
+./dotfiles.sh uninstall
+```
+
+This will:
+
+- Prompt for confirmation before removing anything
+- Remove NVM and all Node.js versions
+- Remove Rust toolchain (via rustup)
+- Remove uv (Python package manager)
+- Remove Go installation from `/usr/local/go`
+- Remove Haskell toolchain (via ghcup)
+- Unlink dotfiles (only removes symlinks)
+
+**Selective Uninstall:**
+
+```bash
+# Remove only Node.js and Rust
+./dotfiles.sh uninstall --only node,rust --confirm
+
+# Remove everything except Haskell
+./dotfiles.sh uninstall --exclude haskell --confirm
+```
+
+**Restore Backups:**
+
+If you want to restore your original dotfiles after uninstalling:
+
+```bash
+./dotfiles.sh uninstall --confirm --restore-backups
+```
+
+This restores the most recent backup from `~/.dotfiles-backup/`.
+
+**Note:** APT packages are NOT removed automatically. To remove them:
+
+```bash
+sudo apt remove <package-name>
+```
+
+## 9. VS Code Integration
+
+### 9.1 Install VS Code on Windows
 
 Download from: [https://code.visualstudio.com/](https://code.visualstudio.com/)
 
-### 8.2 Install WSL Extension
+### 9.2 Install WSL Extension
 
 In VS Code (Windows):
 
 - Open Extensions
 - Install "**WSL**" by Microsoft
 
-### 8.3 Launch WSL Workspace
+### 9.3 Launch WSL Workspace
 
 From WSL:
 
@@ -219,9 +279,9 @@ code .
 
 VS Code will reopen connected directly to WSL.
 
-## 9. Docker Setup (WSL)
+## 10. Docker Setup (WSL)
 
-### 9.1 Install Docker Desktop (Windows)
+### 10.1 Install Docker Desktop (Windows)
 
 Download: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
 
@@ -230,14 +290,14 @@ During setup:
 - Enable **WSL 2 backend**
 - Enable integration for your Ubuntu distro
 
-### 9.2 Verify Docker
+### 10.2 Verify Docker
 
 ```bash
 docker --version
 docker run hello-world
 ```
 
-## 10. Git Configuration
+## 11. Git Configuration
 
 Git configuration is symlinked from this repository.
 
@@ -247,9 +307,9 @@ Check:
 git config --list
 ```
 
-## 11. SSH Keys (GitLab)
+## 12. SSH Keys (GitLab)
 
-### 11.1 Generate SSH Key
+### 12.1 Generate SSH Key
 
 ```bash
 ssh-keygen -t ed25519 -C "your.email@example.com"
@@ -257,14 +317,14 @@ ssh-keygen -t ed25519 -C "your.email@example.com"
 
 Press Enter to accept defaults.
 
-### 11.2 Start SSH Agent
+### 12.2 Start SSH Agent
 
 ```bash
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 ```
 
-### 11.3 Add Key to GitLab
+### 12.3 Add Key to GitLab
 
 Copy public key:
 
@@ -278,7 +338,7 @@ Go to:
 - Paste the key
 - Save
 
-### 11.4 Test Connection
+### 12.4 Test Connection
 
 ```bash
 ssh -T git@gitlab.com
@@ -290,7 +350,7 @@ Expected output:
 Welcome to GitLab, @username!
 ```
 
-## 12. HTTPS Authentication (Optional)
+## 13. HTTPS Authentication (Optional)
 
 If you use HTTPS instead of SSH:
 
@@ -300,9 +360,9 @@ git config --global credential.helper store
 
 > :warning: This stores credentials unencrypted. SSH is strongly recommended instead.
 
-## 13. Windows ↔ WSL Downloads Linking (Optional)
+## 14. Windows ↔ WSL Downloads Linking (Optional)
 
-### 13.1 Create Windows Folder
+### 14.1 Create Windows Folder
 
 On Windows:
 
@@ -310,7 +370,7 @@ On Windows:
 C:\Users\<your-user>\WSL-Downloads
 ```
 
-### 13.2 Link in WSL
+### 14.2 Link in WSL
 
 ```bash
 ln -s /mnt/c/Users/<your-user>/WSl-Downloads ~/Downloads
@@ -318,7 +378,7 @@ ln -s /mnt/c/Users/<your-user>/WSl-Downloads ~/Downloads
 
 This allows seamless file transfer between Windows and WSL.
 
-## 14. Bash Aliases
+## 15. Bash Aliases
 
 Aliases are stored in:
 
@@ -340,7 +400,7 @@ alias path='echo -e ${PATH//:/\\n}'
 
 Changes are applied automatically via `.bashrc`.
 
-## 15. Updating the Environment
+## 16. Updating the Environment
 
 To update tools:
 
@@ -367,7 +427,30 @@ You can also selectively update categories:
 ./dotfiles.sh update --exclude haskell
 ```
 
-## 16. Repository Structure
+## 17. Dotfile Backups
+
+Before linking dotfiles, the installer automatically backs up existing files to:
+
+```text
+~/.dotfiles-backup/<timestamp>/
+```
+
+Each backup is timestamped (e.g., `20260110-143022`), so you never lose your original configurations.
+
+To restore a backup:
+
+```bash
+# Find your backups
+ls -la ~/.dotfiles-backup/
+
+# Copy back manually
+cp ~/.dotfiles-backup/20260110-143022/.bashrc ~/
+
+# Or use uninstall with --restore-backups
+./dotfiles.sh uninstall --confirm --restore-backups
+```
+
+## 18. Repository Structure
 
 ```text
 .
@@ -392,10 +475,11 @@ You can also selectively update categories:
 ├── update.sh                 # Update script
 ├── verify.sh                 # Quick verification
 ├── doctor.sh                 # Full health check
+├── uninstall.sh              # Uninstallation script
 └── README.md
 ```
 
-## 17. Tool Categories
+## 19. Tool Categories
 
 The tool registry (`scripts/registry/tools.sh`) organises tools into categories:
 
@@ -409,7 +493,7 @@ The tool registry (`scripts/registry/tools.sh`) organises tools into categories:
 - **Containers**: docker
 - **Editors/Terminal**: nvim, tmux
 
-## 18. Language-Specific Notes
+## 20. Language-Specific Notes
 
 ### Python
 
@@ -447,7 +531,7 @@ The tool registry (`scripts/registry/tools.sh`) organises tools into categories:
 - Multiple versions supported
 - Default version set automatically
 
-## 19. Troubleshooting
+## 21. Troubleshooting
 
 ### Common Issues
 
@@ -481,7 +565,20 @@ source ~/.nvm/nvm.sh
 - Check `scripts/lib/config.sh` for expected versions
 - Run `./dotfiles.sh doctor` for detailed diagnostics
 
-## 20. Philosophy
+**Restore original dotfiles:**
+
+```bash
+# List backups
+ls -la ~/.dotfiles-backup/
+
+# Restore via uninstall
+./dotfiles.sh uninstall --confirm --restore-backups
+
+# Or manually copy
+cp ~/.dotfiles-backup/<timestamp>/.bashrc ~/
+```
+
+## 22. Philosophy
 
 This setup prioritises:
 
@@ -493,3 +590,5 @@ This setup prioritises:
 - **Idempotency**: safe to rerun scripts multiple times
 - **Consistency**: unified logging and error handling
 - **Flexibility**: selective installation and updates via category filtering
+- **Safety**: automatic backups before modifying dotfiles
+- **Reversibility**: clean uninstall with optional restoration
