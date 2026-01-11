@@ -121,7 +121,7 @@ update_haskell() {
 update_python() {
     log_info "Updating Python tooling"
 
-    python3 -m pip install --user --upgrade pip
+    python3 -m pip install --user --break-system-packages --upgrade pip
 
     if command_exists uv; then
         uv self update

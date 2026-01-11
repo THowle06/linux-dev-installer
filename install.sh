@@ -66,7 +66,7 @@ install_apt_packages() {
 install_pip_packages() {
     log_info "Setting up Python tooling"
 
-    python3 -m pip install --user --upgrade pip
+    python3 -m pip install --user --break-system-packages --upgrade pip
 
     log_ok "Python tooling updated successfully"
 }
@@ -239,7 +239,7 @@ link_dotfiles() {
 
     # Backup existing files before linking
     backup_file "$HOME/.bashrc"
-    backup_file "$HOME/.bash-aliases"
+    backup_file "$HOME/.bash_aliases"
     backup_file "$HOME/.gitconfig"
 
     ln -sf "$DOTFILES_DIR/bash/.bashrc" "$HOME/.bashrc"
