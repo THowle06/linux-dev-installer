@@ -80,11 +80,16 @@ for tool in "${TOOLS_PYTHON[@]}"; do
 done
 
 section "Node.js"
-check_tool "node" node "v$NODE_VERSION"
-check_tool "npm" npm
+for tool in "${TOOLS_NODE[@]}"; do
+    check_tool "$tool" "$tool"
+done
+check_tool "Node.js version" node "v$NODE_VERSION"
 
 section "Go"
-check_tool "go" go "go$GO_VERSION"
+for tool in "${TOOLS_GO[@]}"; do
+    check_tool "$tool" "$tool"
+done
+check_tool "Go version" go "go$GO_VERSION"
 
 section "Rust"
 for tool in "${TOOLS_RUST[@]}"; do
@@ -92,15 +97,22 @@ for tool in "${TOOLS_RUST[@]}"; do
 done
 
 section "Java"
-check_tool "java" java "$JAVA_MAJOR"
-check_tool "javac" javac
-check_tool "mvn" mvn
-check_tool "gradle" gradle
+for tool in "${TOOLS_JAVA[@]}"; do
+    check_tool "$tool" "$tool"
+done
+check_tool "Java version" java "$JAVA_MAJOR"
+
 
 section "Haskell"
 for tool in "${TOOLS_HASKELL[@]}"; do
     check_tool "$tool" "$tool"
 done
+
+section ".NET"
+for tool in "${TOOLS_DOTNET[@]}"; do
+    check_tool "$tool" "$tool"
+done
+check_tool ".NET version" dotnet "$DOTNET_VERSION"
 
 section "Containers"
 for tool in "${TOOLS_CONTAINERS[@]}"; do

@@ -131,6 +131,24 @@ update_python() {
 }
 
 #######################################
+# .NET SDK
+#######################################
+
+update_dotnet() {
+    log_info "Updating .NET SDK"
+
+    if ! command_exists dotnet; then
+        log_warn ".NET not installed (skipping)"
+        return
+    fi
+
+    sudo apt update
+    sudo apt upgrade -y dotnet-sdk-10.0
+
+    log_ok ".NET SDK updated"
+}
+
+#######################################
 # Dotfiles
 #######################################
 
@@ -162,6 +180,7 @@ main() {
     run_category go         update_go
     run_category haskell    update_haskell
     run_category python     update_python
+    run_category dotnet     update_dotnet
     run_category editors    relink_dotfiles
 
     log_info "Update complete. Restart shell if needed."

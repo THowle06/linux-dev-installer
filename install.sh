@@ -205,6 +205,30 @@ install_haskell() {
 }
 
 #######################################
+# .NET SDK
+#######################################
+
+install_dotnet() {
+    log_info "Setting up .NET SDK"
+
+    if command_exists dotnet; then
+        log_warn ".NET already installed: $(dotnet --version)"
+        return
+    fi
+
+    log_info "Adding Microsoft package repository"
+    wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
+
+    log_info "Installing .NET SDK ${DOTNET_VERSION}"
+    sudo apt update
+    sudo apt install -y dotnet-sdk-10.0
+
+    log_ok ".NET SDK ${DOTNET_VERSION} installed successfully"
+}
+
+#######################################
 # Dotfiles
 #######################################
 
@@ -239,6 +263,7 @@ main() {
     run_category rust       install_rust
     run_category python     install_uv
     run_category haskell    install_haskell
+    run_category dotnet     install_dotnet
     run_category editors    link_dotfiles
 
     log_info "Installation complete! Please restart your shell or run: source ~/.bashrc"

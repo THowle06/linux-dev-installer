@@ -67,6 +67,13 @@ TOOLS_HASKELL=(
 )
 
 # -------------------------------
+# .NET SDK
+# -------------------------------
+TOOLS_DOTNET=(
+    dotnet
+)
+
+# -------------------------------
 # Containers
 # -------------------------------
 TOOLS_CONTAINERS=(
@@ -92,6 +99,7 @@ ALL_TOOLS=(
     "${TOOLS_RUST[@]}"
     "${TOOLS_JAVA[@]}"
     "${TOOLS_HASKELL[@]}"
+    "${TOOLS_DOTNET[@]}"
     "${TOOLS_CONTAINERS[@]}"
     "${TOOLS_EDITORS[@]}"
 )

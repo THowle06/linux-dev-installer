@@ -253,6 +253,24 @@ remove_haskell() {
     fi
 }
 
+remove_dotnet() {
+    log_info "Removing .NET SDK"
+
+    if command_exists dotnet; then
+        sudo apt remove -y dotnet-sdk-10.0
+        sudo apt autoremove -y
+
+        # Optionally remove Microsoft rep
+        if [[ -f /etc/apt/sources.list.d/microsoft-prod.list ]]; then 
+            sudo rm /etc/apt/sources.list.d/microsoft-prod.list
+        fi
+
+        log_ok ".NET SDK removed"
+    else
+        log_warn ".NET SDK not found (skipping)"
+    fi
+}
+
 #######################################
 # Main
 #######################################
