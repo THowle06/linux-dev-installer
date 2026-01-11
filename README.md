@@ -14,7 +14,7 @@ The setup supports development in:
 - **Java** (Maven, Gradle)
 - **Python** (python3, pip, uv)
 - **C / C++**
-- **C#**
+- **C# / .NET**
 - **Go**
 - **Rust**
 - **JavaScript / TypeScript**
@@ -81,6 +81,7 @@ This script will:
 - install Go via official binaries
 - install Haskell via **ghcup**
 - install Python tooling (pip + uv)
+- install .NET SDK (10.0 LTS) via APT
 - install Docker tooling
 - back up existing dotfiles to `~/.dotfiles-backup/`
 - symlink tracked dotfiles
@@ -103,6 +104,7 @@ This ensures:
 - NVM is loaded
 - Cargo paths are active
 - Go binaries are in PATH
+- .NET is available in PATH
 
 ## 6. Verify the Environment
 
@@ -207,6 +209,7 @@ The `dotfiles.sh` script provides a unified entrypoint:
 - `go` - Go language
 - `rust` - Rust toolchain via rustup
 - `haskell` - Haskell toolchain via ghcup
+- `dotnet` - .NET SDK (10.0 LTS via APT)
 - `java` - Java (installed via APT, not filterable)
 - `editors` - Dotfile linking
 
@@ -228,6 +231,7 @@ This will:
 - Remove uv (Python package manager)
 - Remove Go installation from `/usr/local/go`
 - Remove Haskell toolchain (via ghcup)
+- Remove .NET SDK (via APT)
 - Unlink dotfiles (only removes symlinks)
 
 **Selective Uninstall:**
@@ -250,7 +254,7 @@ If you want to restore your original dotfiles after uninstalling:
 
 This restores the most recent backup from `~/.dotfiles-backup/`.
 
-**Note:** APT packages are NOT removed automatically. To remove them:
+**Note:** APT packages beyond the SDKs are NOT removed automatically. To remove them:
 
 ```bash
 sudo apt remove <package-name>
@@ -490,6 +494,7 @@ The tool registry (`scripts/registry/tools.sh`) organises tools into categories:
 - **Rust**: rustc, cargo (via rustup)
 - **Java**: java, javac, mvn, gradle
 - **Haskell**: ghcup, ghc, cabal
+- **.NET**: dotnet (SDK)
 - **Containers**: docker
 - **Editors/Terminal**: nvim, tmux
 
@@ -531,6 +536,11 @@ The tool registry (`scripts/registry/tools.sh`) organises tools into categories:
 - Multiple versions supported
 - Default version set automatically
 
+### .NET
+
+- Managed via APT (dotnet-sdk-10.0)
+- PATH configured system-wide
+
 ## 21. Troubleshooting
 
 ### Common Issues
@@ -545,7 +555,7 @@ exec bash
 **Permission denied on scripts:**
 
 ```bash
-chmod +x dotfiles.sh install.sh update.sh verify.sh doctor.sh
+chmod +x dotfiles.sh install.sh update.sh verify.sh doctor.sh uninstall.sh
 ```
 
 **Docker not accessible:**
