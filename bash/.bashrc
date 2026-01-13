@@ -116,9 +116,16 @@ if ! shopt -oq posix; then
   fi
 fi
 
-[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
-[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+#######################################
+# Language Toolchain Configuration
+#######################################
 
+# Java
+if [ -d "/usr/lib/jvm/java-21-openjdk-amd64" ]; then
+    export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
+fi
+
+# Node.js (NVM)
 export NVM_DIR="$HOME/.nvm"
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     . "$NVM_DIR/nvm.sh"
@@ -127,11 +134,25 @@ if [ -s "$NVM_DIR/bash_completion" ]; then
     . "$NVM_DIR/bash_completion"
 fi
 
-if [ -d "/usr/lib/jvm/java-21-openjdk-amd64" ]; then
-    export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
-    export PATH="$JAVA_HOME/bin:$PATH"
+# Go
+if [ -d "/usr/local/go/bin" ]; then
+    export PATH="/usr/local/go/bin:$PATH"
 fi
 
+# Rust
+if [ -f "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
+
+# Haskell (GHCup)
+if [ -f "$HOME/.ghcup/env" ]; then
+    . "$HOME/.ghcup/env"
+fi
+
+# Local bin directory
+if [ -d "$HOME/.local/bin" ]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
 
 # Local, machine-specific configuration (not tracked in git)
 if [ -f "$HOME/.bashrc.local" ]; then
