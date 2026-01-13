@@ -48,7 +48,6 @@ ripgrep
 # Containers & virtualisation
 # -------------------------------------------------
 docker.io
-docker-compose-plugin
 
 # -------------------------------------------------
 # Utilities
