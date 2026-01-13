@@ -28,7 +28,15 @@ category_enabled() {
     # Include list takes priority
     if [[ -n "$FILTER_INCLUDE" ]]; then
         IFS=',' read -ra inc <<<"$FILTER_INCLUDE"
-        for i in "${exc[@]}"; do
+        for i in "${inc[@]}"; do
+            [[ "$e" == "$cat" ]] && return 0
+        done
+        return 1
+    fi
+
+    if [[ -n "$FILTER_INCLUDE" ]]; then
+        IFS=',' read -ra exc <<<"$FILTER_EXCLUDE"
+        for e in "${exc[@]}"; do
             [[ "$e" == "$cat" ]] && return 1
         done
     fi
@@ -114,12 +122,24 @@ confirm_uninstall() {
     fi
 
     local items=""
-    [[ "$(category_enabled python)" == "0" ]] && items+="  - Python tooling (uv)\n"
-    [[ "$(category_enabled node)" == "0" ]] && items+="  - NVM and Node.js versions\n"
-    [[ "$(category_enabled rust)" == "0" ]] && items+="  - Rust toolchain (via rustup)\n"
-    [[ "$(category_enabled go)" == "0" ]] && items+="  - Go installation (/usr/local/go)\n"
-    [[ "$(category_enabled haskell)" == "0" ]] && items+="  - Haskell toolchain (via ghcup)\n"
-    [[ "$(category_enabled editors)" == "0" ]] && items+="  - Symlinked dotfiles\n"
+    if category_enabled python; then
+        items+="  - Python tooling (uv)\n"
+    fi
+    if category_enabled node; then
+        items+="  - NVM and Node.js versions\n"
+    fi
+    if category_enabled rust; then
+        items+="  - Rust toolchain (via rustup)\n"
+    fi
+    if category_enabled go; then
+        items+="  - Go installation (/usr/local/go)\n"
+    if
+    if category_enabled haskell; then
+        items+="  - Haskell toolchain (via ghcup)\n"
+    fi
+    if category_enabled editors; then
+        items+="  - Symlinked dotfiles\n"
+    fi
 
     cat <<EOF
 
@@ -151,7 +171,7 @@ EOF
 unlink_dotfiles() {
     log_info "Unlinking dotfiles"
 
-    for file in .bashrc .bash-aliases .gitconfig; do
+    for file in .bashrc .bash_aliases .gitconfig; do
         if [[ -L "$HOME/$file" ]]; then
             rm "$HOME/$file"
             log_ok "Unlinked $file"
