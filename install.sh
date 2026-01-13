@@ -54,7 +54,7 @@ install_apt_packages() {
     sudo apt update
 
     log_info "Installing packages from packages/apt.txt"
-    xargs -a "$DOTFILES_DIR/packages/apt.txt" sudo apt install -y
+    grep -v '^#' "$DOTFILES_DIR/packages/apt.txt" | grep -v '^$' | xargs sudo apt install -y
 
     log_ok "System packages installed successfully"
 }
