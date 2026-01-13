@@ -10,13 +10,13 @@ get_version_line() {
 
 backup_file() {
     local file="$1"
-    local backup_dir="$HOME/.dotfiles-backup/$(date + %Y%m%d-%H%M%S)"
+    local backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
-    if [[ -e "$file" && ! -L "$FILE" ]]; then
+    if [[ -e "$file" && ! -L "$file" ]]; then
         mkdir -p "$backup_dir"
         cp -a "$file" "$backup_dir/"
         log_info "Backed up $(basename "$file") to $backup_dir"
-        return 0
     fi
-    return 1
+
+    return 0
 }
