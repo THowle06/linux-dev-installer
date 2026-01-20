@@ -67,6 +67,15 @@ TOOLS_HASKELL=(
 )
 
 # -------------------------------
+# Lean 4
+# -------------------------------
+TOOLS_LEAN=(
+    elan
+    lean
+    lake
+)
+
+# -------------------------------
 # .NET SDK
 # -------------------------------
 TOOLS_DOTNET=(
@@ -99,6 +108,7 @@ ALL_TOOLS=(
     "${TOOLS_RUST[@]}"
     "${TOOLS_JAVA[@]}"
     "${TOOLS_HASKELL[@]}"
+    "${TOOLS_LEAN[@]}"
     "${TOOLS_DOTNET[@]}"
     "${TOOLS_CONTAINERS[@]}"
     "${TOOLS_EDITORS[@]}"
