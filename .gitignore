@@ -1,5 +1,17 @@
+# Backup directories
+.dotfiles-backup/
+
+# Temporary files
 *.log
 *.tmp
-.cache/
-.env
+.DS_Store
+
+# Editor artifacts
 .vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS artifacts
+Thumbs.db
