@@ -273,6 +273,18 @@ remove_haskell() {
     fi
 }
 
+remove_lean4() {
+    log_info "Removing Lean 4"
+
+    if [ -d "$HOME/.elan" ]; then
+        log_info "Removing elan from ~/.elan"
+        rm -rf "$HOME/.elan"
+        log_ok "Lean 4 removed"
+    else
+        log_warn "elan not found"
+    fi
+}
+
 remove_dotnet() {
     log_info "Removing .NET SDK"
 
@@ -306,6 +318,7 @@ main() {
     run_category rust       remove_rust
     run_category go         remove_go
     run_category haskell    remove_haskell
+    run_category lean       remove_lean4
     run_category editors    unlink_dotfiles
     run_category editors    restore_dotfile_backups
     
