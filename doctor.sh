@@ -33,7 +33,13 @@ check_tool() {
 
     if command_exists "$cmd"; then
         local version
-        version="$($cmd --version 2>/dev/null | head -n 1 | cut -c1-80 || echo "unknown")"
+        version="$(timeout 5s "$cmd" --version 2>/dev/null | head -n 1 | cut -c1-80 || true)"
+
+        if [[ -z "$version" ]]; then
+            log_warn "$name present but version check timed out"
+            ((WARNINGS+=1))
+            return
+        fi
 
         if [[ -n "$expected" && "$version" != *"$expected"* ]]; then
             log_warn "$name version mismatch"
@@ -108,10 +114,21 @@ for tool in "${TOOLS_HASKELL[@]}"; do
 done
 
 section "Lean 4"
-for tool in "${TOOLS_LEAN[@]}"; do
-    check_tool "$tool" "$tool"
-done
-check_tool "Lean version" lean "lean"
+if command_exists elan; then
+    if [[ -d "$HOME/.elan/toolchains/$LEAN_VERSION" ]]; then
+        for tool in "${TOOLS_LEAN[@]}"; do
+            check_tool "$tool" "$tool"
+        done
+        check_tool "Lean version" lean "lean"
+    else
+        log_warn "Lean toolchain $LEAN_VERSION not installed"
+        ((WARNINGS+=1))
+        check_tool "elan" "elan"
+    fi
+else
+    log_error "elan is not installed"
+    ((ERRORS+=1))
+fi
 check_path "elan" "$HOME/.elan"
 
 section ".NET"

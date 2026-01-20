@@ -11,10 +11,15 @@ check_tool() {
     fi
 
     local version_line
-    version_line="$(get_version_line "$cmd")"
+    version_line="$(timeout 5s get_version_line "$cmd" 2>/dev/null || true)"
 
     if [[ -n "$expected" && "$version_line" != *"$expected"* ]]; then
         log_warn "$name present but version mismatch: expected contains \"$expected\", got \"$version_line\""
+        return 1
+    fi
+
+    if [[ -z "$version_line" ]]; then
+        log_warn "$name present but version check timed out or returned empty"
         return 1
     fi
 

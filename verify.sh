@@ -68,11 +68,21 @@ main() {
     done
 
     log_info "Verifying Lean 4"
-    for tool in "${TOOLS_LEAN[@]}"; do
-        if ! check_tool "$tool" "$tool"; then
-            MISSING_TOOLS+=("$tool")
+    if command_exists elan; then
+        if [[ -d "$HOME/.elan/toolchains/$LEAN_VERSION" ]]; then
+            for tool in "${TOOLS_LEAN[@]}"; do
+                if ! check_tool "$tool" "$tool"; then
+                    MISSING_TOOLS+=("$tool")
+                fi
+            done
+        else
+            log_warn "Lean toolchain $LEAN_VERSION not installed"
+            MISSING_TOOLS+=("lean" "lake")
         fi
-    done
+    else
+        log_warn "elan not found"
+        MISSING_TOOLS+=("elan" "lean" "lake")
+    fi
 
     log_info "Verifying .NET"
     for tool in "${TOOLS_DOTNET[@]}"; do
