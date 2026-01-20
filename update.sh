@@ -115,6 +115,19 @@ update_haskell() {
 }
 
 #######################################
+# Lean 4
+#######################################
+
+update_lean4() {
+    if command_exists elan; then
+        log_info "Updating Lean 4 toolchain via elan"
+        elan update
+    else
+        log_warn "elan not installed, skipping"
+    fi
+}
+
+#######################################
 # Python Tooling
 #######################################
 
@@ -179,6 +192,7 @@ main() {
     run_category rust       update_rust
     run_category go         update_go
     run_category haskell    update_haskell
+    run_category lean       update_lean4
     run_category python     update_python
     run_category dotnet     update_dotnet
     run_category editors    relink_dotfiles
