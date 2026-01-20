@@ -2,8 +2,13 @@
 # Bootstrap script - loaded by all other scripts
 # Enforces strict mode and loads core utilities
 
+if [[ "${BOOTSTRAPPED:-0}" -eq 1 ]]; then
+    return 0 2>/dev/null || exit 0
+fi
+
 set -euo pipefail
 IFS=$'\n\t'
+export BOOTSTRAPPED=1
 
 # Get the project root directory
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

@@ -2,4 +2,8 @@
 
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/core/bootstrap.sh"
 
-log_header "Doctor orchestrator (placeholder)"
+doctor_main() {
+    log_header "Doctor orchestrator"
+    log_info "only=${FILTER_ONLY:-all} exclude=${FILTER_EXCLUDE:-none}"
+    # TODO: deeper diagnostics via registry
+}
