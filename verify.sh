@@ -67,6 +67,13 @@ main() {
         fi
     done
 
+    log_info "Verifying Lean 4"
+    for tool in "${TOOLS_LEAN[@]}"; do
+        if ! check_tool "$tool" "$tool"; then
+            MISSING_TOOLS+=("$tool")
+        fi
+    done
+
     log_info "Verifying .NET"
     for tool in "${TOOLS_DOTNET[@]}"; do
         if ! check_tool "$tool" "$tool"; then

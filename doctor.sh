@@ -102,11 +102,17 @@ for tool in "${TOOLS_JAVA[@]}"; do
 done
 check_tool "Java version" java "$JAVA_MAJOR"
 
-
 section "Haskell"
 for tool in "${TOOLS_HASKELL[@]}"; do
     check_tool "$tool" "$tool"
 done
+
+section "Lean 4"
+for tool in "${TOOLS_LEAN[@]}"; do
+    check_tool "$tool" "$tool"
+done
+check_tool "Lean version" lean "lean"
+check_path "elan" "$HOME/.elan"
 
 section ".NET"
 for tool in "${TOOLS_DOTNET[@]}"; do
