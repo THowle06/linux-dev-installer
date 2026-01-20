@@ -149,6 +149,11 @@ if [ -f "$HOME/.ghcup/env" ]; then
     . "$HOME/.ghcup/env"
 fi
 
+# Lean 4 (elan)
+if [ -f "$HOME/.elan/env" ]; then
+    . "$HOME/.elan/env"
+fi
+
 # Local bin directory
 if [ -d "$HOME/.local/bin" ]; then
     export PATH="$HOME/.local/bin:$PATH"
