@@ -205,6 +205,32 @@ install_haskell() {
 }
 
 #######################################
+# Lean 4
+#######################################
+
+install_lean4() {
+    log_info "Setting up Lean 4 via elan"
+
+    if command_exists elan; then
+        log_warn "elan already installed: $(elan --version)"
+        return
+    fi
+
+    log_info "Installing elan (Lean version manager)"
+    curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+
+    # Source elan into current shell
+    # shellcheck disable=SC1091
+    source "$HOME/.elan/env"
+
+    log_info "Installing Lean $LEAN_VERSION"
+    elan toolchain install "$LEAN_VERSION"
+    elan default "$LEAN_VERSION"
+
+    log_ok "Lean 4 ${LEAN_VERSION} installed successfully"
+}
+
+#######################################
 # .NET SDK
 #######################################
 
@@ -263,6 +289,7 @@ main() {
     run_category rust       install_rust
     run_category python     install_uv
     run_category haskell    install_haskell
+    run_category lean       install_lean4
     run_category dotnet     install_dotnet
     run_category editors    link_dotfiles
 
