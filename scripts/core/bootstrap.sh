@@ -12,7 +12,7 @@ export BOOTSTRAPPED=1
 
 # Get the project root directory
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly PROJECT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+readonly PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 readonly SCRIPTS_DIR="${PROJECT_ROOT}/scripts"
 readonly CORE_DIR="${SCRIPTS_DIR}/core"
 readonly TOOLS_DIR="${SCRIPTS_DIR}/tools"
@@ -39,7 +39,6 @@ if [[ "${ID}" != "ubuntu" ]] || [[ "${VERSION_ID}" != "24.04" ]]; then
 fi
 
 # Export common variables
-export PROJECT_ROOT SCRIPT_DIR CORE_DIR TOOLS_DIR COMMANDS_DIR
-export DOTFILES_DIR PACKAGES_DIR
+export PROJECT_ROOT SCRIPT_DIR CORE_DIR TOOLS_DIR COMMANDS_DIR DOTFILES_DIR PACKAGES_DIR
 
 log_debug "Bootstrap loaded from ${PROJECT_ROOT}"

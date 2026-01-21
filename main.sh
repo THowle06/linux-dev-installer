@@ -50,7 +50,7 @@ done
 
 export FILTER_ONLY FILTER_EXCLUDE DRY_RUN CONFIRM RESTORE_BACKUPS LOG_LEVEL
 
-case "$command" in
+case "$COMMAND" in
     install)    source "${COMMANDS_DIR}/install.sh";    install_main ;;
     update)     source "${COMMANDS_DIR}/update.sh";     update_main ;;
     verify)     source "${COMMANDS_DIR}/verify.sh";     verify_main ;;
