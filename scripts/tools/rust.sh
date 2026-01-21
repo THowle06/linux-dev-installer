@@ -20,7 +20,7 @@ rust_install() {
 
     # Run rustup with non-interactive options
     log_info "Running rustup installer..."
-    "$rustup_init" -y --default-toolchain "${RUST_CHANNEL}" --no-modfiy-path
+    "$rustup_init" -y --default-toolchain "${RUST_CHANNEL}" --no-modify-path
 
     # Clean up
     rm "$rustup_init"
