@@ -11,7 +11,7 @@ dotfiles_install() {
 
     # Backup and symlink bash config
     _backup_and_symlink "${HOME}/.bashrc" "${DOTFILES_DIR}/bash/.bashrc"
-    _backup_and_symlink "${HOME}/.bash-aliases" "${DOTFILES_DIR}/bash/.bash-aliases"
+    _backup_and_symlink "${HOME}/.bash_aliases" "${DOTFILES_DIR}/bash/.bash_aliases"
 
     # Backup and symlink git config
     _backup_and_symlink "${HOME}/.gitconfig" "${DOTFILES_DIR}/git/.gitconfig"
@@ -23,7 +23,7 @@ dotfiles_update() {
 
     # Remove old symlinks and re-create
     _backup_and_symlink "${HOME}/.bashrc" "${DOTFILES_DIR}/bash/.bashrc" force
-    _backup_and_symlink "${HOME}/.bash-aliases" "${DOTFILES_DIR}/bash/.bash-aliases" force
+    _backup_and_symlink "${HOME}/.bash_aliases" "${DOTFILES_DIR}/bash/.bash_aliases" force
     _backup_and_symlink "${HOME}/.gitconfig" "${DOTFILES_DIR}/git/.gitconfig" force
 
     log_success "Dotfiles updated"
@@ -39,8 +39,8 @@ dotfiles_verify() {
         ((issues++))
     fi
 
-    if [[ ! -L "${HOME}/.bash-aliases" ]]; then
-        log_warn "${HOME}/.bash-aliases is not a symlink"
+    if [[ ! -L "${HOME}/.bash_aliases" ]]; then
+        log_warn "${HOME}/.bash_aliases is not a symlink"
         ((issues++))
     fi
 
@@ -109,7 +109,7 @@ _restore_from_backup() {
     fi
 
     # Find most recent backup
-    backups=$(find "${BACKUP_DIR}" -name "$(basename "$target").backup.*" -type 2>/dev/null | sort -r | head -1)
+    backups=$(find "${BACKUP_DIR}" -name "$(basename "$target").backup.*" -type f 2>/dev/null | sort -r | head -1)
 
     if [[ -n "$backups" ]]; then
         cp "$backups" "$target"
