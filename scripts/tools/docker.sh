@@ -15,7 +15,7 @@ docker_install() {
         log_info "WSL detected with Docker Desktop integration expected."
         log_info "Skipping Docker Engine install; ensure Docker Desktop WSL integration is enabled."
         if ! command_exists docker; then
-            log_warn "docker CLU not found. Launch Docker Desktop once to install the CLI into this distro."
+            log_warn "docker CLI not found. Launch Docker Desktop once to install the CLI into this distro."
             return 1
         fi
         log_success "Docker CLI available via Docker Desktop"
