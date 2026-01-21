@@ -144,6 +144,12 @@ if [ -f "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
 
+# Anaconda
+if [ -d "$HOME/anaconda3" ]; then
+    . "$HOME/anaconda3/etc/profile.d/conda.sh"
+    export PATH="$HOME/anaconda3/bin:$PATH"
+fi
+
 # Haskell (GHCup)
 if [ -f "$HOME/.ghcup/env" ]; then
     . "$HOME/.ghcup/env"

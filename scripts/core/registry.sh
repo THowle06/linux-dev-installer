@@ -4,7 +4,9 @@ set -euo pipefail
 # Define tool metadata: name, category, functions
 # Ensure each tool file defines: <tool>_install, _update, _verify, _uninstall
 TOOLS=(
+    "apt:apt:apt"
     "python:python:python"
+    "anaconda:anaconda:anaconda"
     "node:node:node"
     "go:go:go"
     "rust:rust:rust"
