@@ -74,7 +74,7 @@ go_uninstall() {
     if [[ -d "${GO_INSTALL_PATH}/go" ]]; then
         log_info "Removing Go from ${GO_INSTALL_PATH}..."
         require_sudo
-        sudo rm -rf "${GO_INSTALL_DIR}/go"
+        sudo rm -rf "${GO_INSTALL_PATH}/go"
         log_success "Go uninstalled"
     else
         log_info "Go not found at ${GO_INSTALL_PATH}/go"
