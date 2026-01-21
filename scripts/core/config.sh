@@ -7,6 +7,7 @@ set -euo pipefail
 readonly HOME_DIR="${HOME}"
 readonly BACKUP_DIR="${HOME}/.dotfiles-backup"
 readonly TEMP_DIR="/tmp/linux-dev-installer"
+readonly NVM_DIR="${HOME}/.nvm"
 
 # Tool categories
 readonly CATEGORIES=(
