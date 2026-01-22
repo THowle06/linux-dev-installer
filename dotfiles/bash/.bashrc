@@ -161,9 +161,7 @@ if [ -f "$HOME/.elan/env" ]; then
 fi
 
 # Local bin directory
-if [ -d "$HOME/.local/bin" ]; then
-    export PATH="$HOME/.local/bin:$PATH"
-fi
+export PATH="$HOME/.local/bin:$PATH"
 
 # Local, machine-specific configuration (not tracked in git)
 if [ -f "$HOME/.bashrc.local" ]; then

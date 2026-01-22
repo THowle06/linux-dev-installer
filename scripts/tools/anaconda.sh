@@ -61,6 +61,12 @@ anaconda_update() {
 
 anaconda_verify() {
   log_step "Verifying conda..."
+
+  # Source conda if installed
+  if [[ -f "${ANACONDA_INSTALL_PATH}/etc/profile.d/conda.sh" ]]; then
+    source "${ANACONDA_INSTALL_PATH}/etc/profile.d/conda.sh"
+  fi
+
   if ! command_exists conda; then
     log_warn "conda not found"
     return 1

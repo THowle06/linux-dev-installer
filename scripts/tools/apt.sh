@@ -47,7 +47,7 @@ apt_verify() {
     packages=$(grep -v '^#' "${PACKAGES_DIR}/apt.txt" | grep -v '^[[:space:]]*$')
 
     while IFS= read -r pkg; do
-        if ! dpkg -l | grep -q "^ii.*${pkg}"; then
+        if ! dpkg -l "$pkg" 2>/dev/null | grep -q "^ii"; then
             missing+=("$pkg")
         fi
     done <<<"$packages"
