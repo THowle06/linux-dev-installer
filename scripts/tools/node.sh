@@ -40,6 +40,8 @@ node_update() {
 node_verify() {
     log_step "Verifying Node.js ecosystem"
 
+    _source_nvm
+
     local issues=0
 
     if ! command_exists nvm; then
@@ -85,7 +87,7 @@ node_uninstall() {
     # Remove NVM sourcing from shell rc files
     log_info "Removing NVM from shell configuration..."
     sed -i '/export NVM_DIR/d' "${HOME}/.bashrc" 2>/dev/null || true
-    sed -i '/\[ -s "$NVM_DIR\/nvm.sh" \]d' "${HOME}/.bashrc" 2>/dev/null || true
+    sed -i '/\[ -s "$NVM_DIR\/nvm.sh" \]/d' "${HOME}/.bashrc" 2>/dev/null || true
 
     log_success "Node.js uninstalled"
 }
