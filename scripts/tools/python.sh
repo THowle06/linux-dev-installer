@@ -29,11 +29,13 @@ python_install() {
 python_update() {
     log_step "Update Python ecosystem..."
 
-    require_sudo
-    sudo pip3 install --upgrade pip setuptools wheel
+    if ! command_exists python3; then
+        log_error "python3 not found"
+        return 1
+    fi
 
-    # Update uv
-    _install_uv "update"
+    log_info "Updating uv via pipx..."
+    pipx upgrade uv
 
     log_success "Python ecosystem updated"
 }

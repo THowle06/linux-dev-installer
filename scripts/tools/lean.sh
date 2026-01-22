@@ -38,7 +38,6 @@ lean_update() {
   [[ -f "${ELAN_DIR}/env" ]] && source "${ELAN_DIR}/env"
 
   elan self update
-  elan update
 
   log_success "Lean 4 updated"
 }

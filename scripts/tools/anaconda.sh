@@ -55,6 +55,16 @@ anaconda_update() {
     log_warn "conda not found; install first."
     return 1
   fi
+
+  # Source conda if installed
+  if [[ -f "${ANACONDA_INSTALL_PATH}/etc/profile.d/conda.sh" ]]; then
+    source "${ANACONDA_INSTALL_PATH}/etc/profile.d/conda.sh"
+  fi
+
+  # Accept TOS for Anaconda channels
+  conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main 2>/dev/null || true
+  conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r 2>/dev/null || true
+
   conda update -n base -y conda
   log_success "conda updated"
 }
