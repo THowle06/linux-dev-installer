@@ -96,7 +96,7 @@ _ensure_conda_shell_in_rc() {
     fi
   fi
   # Skip if block already present
-  if grep -q "${ANACONDA_START_BLOCK}" "${rc}" 2>/dev/null; then
+  if grep -q "${ANACONDA_BLOCK_START}" "${rc}" 2>/dev/null; then
     return 0
   fi
   cat <<'EOF' >> "${rc}"

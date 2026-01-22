@@ -37,7 +37,7 @@ readonly PYENV_VERSION="2.4.13" # pyenv (optional, for version switching)
 
 # Node.js (via NVM)
 readonly NODE_VERSION="24.12.0"
-readonly NVM_VERSION="0.40.1"
+readonly NVM_INSTALL_VERSION="0.40.1"
 
 # Go (tarball)
 readonly GO_VERSION="1.23.5"

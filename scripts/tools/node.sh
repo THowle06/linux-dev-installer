@@ -92,12 +92,12 @@ node_uninstall() {
 
 # Helper: install NVM
 _install_nvm() {
-    log_info "Downloading and installing NVM ${NVM_VERSION}..."
+    log_info "Downloading and installing NVM ${NVM_INSTALL_VERSION}..."
 
     mkdir -p "$NVM_DIR"
 
     # Download NVM
-    curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh" | bash
+    curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_INSTALL_VERSION}/install.sh" | bash
 
     # Verify installation
     if [[ ! -f "${NVM_DIR}/nvm.sh" ]]; then
@@ -105,12 +105,11 @@ _install_nvm() {
         return 1
     fi
     
-    log_success "NVM ${NVM_VERSION} installed"
+    log_success "NVM ${NVM_INSTALL_VERSION} installed"
 }
 
 # Helper: source NVM in current shell
 _source_nvm() {
-    export NVM_DIR="${HOME}/.nvm"
     [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
     [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
 }
