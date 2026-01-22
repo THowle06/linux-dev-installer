@@ -12,5 +12,5 @@ install_main() {
         log_info "Dry run: no actions executed"
         return 0
     fi
-    _dispatched_tools "install"
+    _dispatch_tools "install"
 }

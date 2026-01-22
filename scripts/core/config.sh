@@ -25,6 +25,9 @@ readonly CATEGORIES=(
     "dotfiles"
 )
 
+# =========== Architecture ===========
+readonly ARCH="$(get_architecture)"
+
 # =========== Version pinning ===========
 
 # Python ecosystem
@@ -65,17 +68,11 @@ readonly LEAN_VERSION="latest"
 readonly ELAN_INIT_URL="https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh"
 
 # Anaconda / Miniconda
-readonly ANACONDA_VERSION="2024.12-1"
-readonly ANACONDA_ARCH="${ARCH}"    # x86_64 or aarch64
-readonly ANACONDA_INSTALLER="Anaconda3-${ANACONDA_VERSION}-Linux-${ANACONDA_ARCH}.sh"
-readonly ANACONDA_URL="https://repo.anaconda.com/archive/${ANACONDA_INSTALLER}"
+readonly ANACONDA_EDITION="miniconda"
 readonly ANACONDA_INSTALL_PATH="${HOME}/anaconda3"
 
 # Docker
 readonly DOCKER_GPG_URL="https://download.docker.com/linux/ubuntu/gpg"
 readonly DOCKER_REPO="deb [arch=${ARCH} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-
-# =========== Architecture ===========
-readonly ARCH="$(get_architecture)"
 
 log_debug "Configuration loaded for ${ARCH} architecture"

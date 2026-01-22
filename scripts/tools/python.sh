@@ -20,7 +20,7 @@ python_install() {
 
     log_info "System python3 and pip3 already present"
 
-    # Install uv globally
+    _ensure_pipx
     _install_uv
 
     log_success "Python ecosystem installed"
@@ -112,5 +112,29 @@ _install_uv() {
         return 1
     fi
 
+    log_success "uv installed/updated"
+}
+
+# Helper: ensure pipx is installed
+_ensure_pipx() {
+    if command_exists pipx; then return 0; fi
+    log_info "Installing pipx via apt..."
+    require_sudo
+    sudo apt-get install -y pipx
+    # Make pipx available in current shell
+    export PATH="$HOME/.local/bin:${PATH}"
+}
+
+# Helper: install or update uv via pipx
+_install_uv() {
+    if ! command_exists pipx; then
+        _ensure_pipx
+    fi
+    log_info "Installing/updating uv via pipx..."
+    pipx install --force uv
+    if ! command_exists uv; then
+        log_error "uv installation failed"
+        return 1
+    fi
     log_success "uv installed/updated"
 }

@@ -11,16 +11,20 @@ apt_install() {
     sudo apt-get update -qq
 
     # Read packages from apt.txt, skip comments and empty lines
-    local packages
-    packages=$(grep -v '^#' "${PACKAGES_DIR}/apt.txt" | grep -v '^[[:space:]]*$' | tr '\n' ' ')
+    local packages=()
+    while IFS= read -r line; do
+        # Skip comments and empty lines
+        [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
+        packages+=("$line")
+    done < <(grep -v '^#' "${PACKAGES_DIR}/apt.txt" | grep -v '^[[:space:]]*$')
 
-    if [[ -z "$packages" ]]; then
+    if [[ ${#packages[@]} -eq 0 ]]; then
         log_warn "No packages found in ${PACKAGES_DIR}/apt.txt"
         return 1
     fi
 
-    log_info "Installing: $packages"
-    sudo apt-get install -y $packages
+    log_info "Installing ${#packages[@]} packages..."
+    sudo apt-get install -y "${packages[@]}"
 
     log_success "Core system packages installed"
 }
