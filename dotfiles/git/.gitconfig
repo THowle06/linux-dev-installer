@@ -4,6 +4,8 @@
 
 [core]
 	editor = "code --wait"
+	autocrlf = input
+	safecrlf = warn
 
 [pull]
 	rebase = false
@@ -13,3 +15,32 @@
 
 [color]
 	ui = auto
+
+[push]
+	default = current
+	autoSetupRemote = true
+
+[fetch]
+	prune = true
+
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	unstage = restore --staged
+	last = log -1 HEAD
+	visual = log --oneline --graph --decorate --all
+
+[diff]
+	colorMoved = zebra
+
+[merge]
+	conflictstyle = zdiff3
+
+[status]
+	showUntrackedFiles = all
+
+[log]
+	abbrevCommit = true
+	decorate = auto
