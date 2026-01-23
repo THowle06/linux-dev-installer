@@ -40,7 +40,7 @@ readonly NODE_VERSION="24.12.0"
 readonly NVM_INSTALL_VERSION="0.40.1"
 
 # Go (tarball)
-readonly GO_VERSION="1.23.5"
+readonly GO_VERSION="1.25.6"
 readonly GO_ARCH="${ARCH}"      # amd64 or arm64
 readonly GO_URL="https://go.dev/dl/go${GO_VERSION}.linux-${GO_ARCH}.tar.gz"
 readonly GO_INSTALL_PATH="/usr/local"
