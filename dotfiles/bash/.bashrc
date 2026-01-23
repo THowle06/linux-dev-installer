@@ -48,10 +48,11 @@ unset color_prompt force_color_prompt
 #######################################
 # Core PATH (user-local first)
 #######################################
-export PATH="$HOME/.local/bin:$PATH"
-if [ -d "/usr/local/go/bin" ]; then
-    export PATH="/usr/local/go/bin:$PATH"
-fi
+# Only add to PATH is not already present
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
 
 #######################################
 # Colors & completion
@@ -85,6 +86,15 @@ fi
 #######################################
 # Language Toolchain Configuration
 #######################################
+
+# Go
+if [ -d "/usr/local/go/bin" ]; then
+    export GOPATH="$HOME/go"
+    case ":$PATH:" in
+        *":/usr/local/go/bin:"*) ;;
+        *) export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH" ;;
+    esac
+fi
 
 # Java
 if [ -d "/usr/lib/jvm/java-21-openjdk-amd64" ]; then
