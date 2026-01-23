@@ -1,142 +1,63 @@
-# Dotfiles
+# Linux Development Environment Installer
 
-This repository provides a **fully reproducible development environment** for Ubuntu-based WSL (Windows Subsystem for Linux).
+A **fully reproducible development environment** for Ubuntu-based systems (WSL/native Linux).
 
-It is designed ot allow a clean machine to be brought to parity with an existing setup using:
+Automated installation and management of development toolchains with version pinning, tracked dotfiles, and health-check tooling.
 
-- version-pinned tooling
-- tracked dotfiles
-- automated installation scripts
-- verification and health-check tooling
+## Quick Start
 
-The setup supports development in:
+### Prerequisites
 
-- **Java** (Maven, Gradle)
-- **Python** (python3, pip, uv)
-- **C / C++**
-- **C# / .NET**
-- **Go**
-- **Rust**
-- **JavaScript / TypeScript**
-- **Haskell**
-- **Docker**
-- **VS Code (WSL integration)**
-
-## 1. Prerequisites (Windows)
-
-Before installing anything in WSL, ensure the following on Windows:
-
-### 1.1 Enable WSL 2
-
-Open **Powershell as Administrator**:
+**Windows (WSL):**
 
 ```powershell
 wsl --install
-```
-
-Reboot when prompted.
-
-Ensure WSL 2 is the default:
-
-```powershell
 wsl --set-default-version 2
+# Install Ubuntu 24.04 LTS from Microsoft Store
 ```
 
-### 1.2 Install Ubuntu
+**Native Linux:** Ubuntu 24.04 LTS
 
-Install **Ubuntu 24.04 LTS** from the Microsoft Store.
-
-After installation, launch Ubuntu and create your Linux user.
-
-## 2. Clone This Repository
-
-Inside WSL:
+### Installation
 
 ```bash
+# Clone repository
 cd ~
-git clone https://gitlab.com/THowle06/dotfiles.git dotfiles
-cd dotfiles
-```
+git clone https://github.com/THowle06/linux-dev-installer.git installer
+cd installer
 
-> :warning: At this point, **do not manually install tools**. Everything is handled by the scripts.
+# Make scripts executable
+chmod +x main.sh
 
-## 3. Make Scripts Executable
+# Run installer
+./main.sh install
 
-```bash
-chmod +x dotfiles.sh install.sh verify.sh update.sh doctor.sh
-```
-
-## 4. Run the Installer
-
-```bash
-./dotfiles.sh install
-```
-
-This script will:
-
-- install all required APT packages
-- install Java (OpenJDK 21)
-- install Node.js via **NVM**
-- install Rust via **rustup**
-- install Go via official binaries
-- install Haskell via **ghcup**
-- install Python tooling (pip + uv)
-- install .NET SDK (10.0 LTS) via APT
-- install Docker tooling
-- back up existing dotfiles to `~/.dotfiles-backup/`
-- symlink tracked dotfiles
-
-You may be prompted for:
-
-- `sudo` password
-- ghcup optional components (can accept defaults)
-
-## 5. Restart Your Shell
-
-After installation:
-
-```bash
+# Restart shell
 exec bash
+
+# Verify installation
+./main.sh verify
+./main.sh doctor
 ```
 
-This ensures:
+## Supported Tools
 
-- NVM is loaded
-- Cargo paths are active
-- Go binaries are in PATH
-- .NET is available in PATH
+- **Java** (OpenJDK 21, Maven, Gradle)
+- **Python** (python3, pip, uv)
+- **C / C++** (gcc, make, cmake)
+- **Go** (1.25.6)
+- **Rust** (via rustup)
+- **JavaScript / TypeScript** (Node.js 24.12.0 via NVM)
+- **Haskell** (via ghcup)
+- **Lean 4** (via elan)
+- **Anaconda / Miniconda** (optional Python distribution)
+- **Docker** (with WSL integration)
+- **Terminal & Editors** (tmux, neovim, fzf, ripgrep)
 
-## 6. Verify the Environment
-
-### 6.1 Quick Verification
-
-```bash
-./dotfiles.sh verify
-```
-
-This script checks:
-
-- tool presence across all categories
-- correct versions
-- PATH resolution
-- language runtimes
-
-**Do not proceed until verification passes.**
-
-### 6.2 Full Health Check
+## CLI Reference
 
 ```bash
-./dotfiles.sh doctor
-```
-
-`doctor.sh` provides a **comprehensive developer health check**, including warnings about missing tools, mismatched versions, or missing PATH entries.
-
-## 7. CLI Reference
-
-The `dotfiles.sh` script provides a unified entrypoint:
-
-```bash
-./dotfiles.sh <command> [options]
+./main.sh <command> [options]
 ```
 
 ### Commands
@@ -154,53 +75,37 @@ The `dotfiles.sh` script provides a unified entrypoint:
 
 ```bash
 # Full installation
-./dotfiles.sh install
+./main.sh install
 
 # Install only specific categories
-./dotfiles.sh install --only python,node,rust
+./main.sh install --only python,node,rust
 
-# Install everything except certain categories
-./dotfiles.sh install --exclude haskell,java
+# Update all tools
+./main.sh update
 
 # Quick verification
-./dotfiles.sh verify
+./main.sh verify
 
-# Detailed health check
-./dotfiles.sh doctor
+# Detailed diagnostics
+./main.sh doctor
 
-# Update existing tools
-./dotfiles.sh update
+# Uninstalled with confirmation
+./main.sh uninstall --confirm
 
-# Update only specific categories
-./dotfiles.sh update --only node,rust
-
-# Update everything except certain categories
-./dotfiles.sh update --exclude haskell
-
-# Uninstall all tools (with confirmation)
-./dotfiles.sh uninstall
-
-# Uninstall only specific categories
-./dotfiles.sh uninstall --only node,rust --confirm
-
-# Uninstall and restore backed up dotfiles
-./dotfiles.sh uninstall --confirm --restore-backups
-
-# Uninstall everything except certain categories
-./dotfiles.sh uninstall --exclude haskell --confirm
-
-# Show help
-./dotfiles.sh help
+# Uninstall and restore dotfiles
+./main.sh uninstall --confirm --restore-backups
 ```
 
 ### Options
 
-| Option              | Description                           |
-| ------------------- | ------------------------------------- |
-| `--only <cats>`     | Comma-separated categories to include |
-| `--exclude <cats>`  | Comma-separated categories to skip    |
-| `--confirm`         | Skip confirmation prompt (uninstall)  |
-| `--restore-backups` | Restore original dotfiles (uninstall) |
+| Options             | Description                              |
+| ------------------- | ---------------------------------------- |
+| `--only <cats>`     | Comma-separated categories to include    |
+| `--exclude <cats>`  | Comma-separated categories to exclude    |
+| `--dry-run`         | Show actions without executing           |
+| `--confirm`         | Skip confirmation prompts                |
+| `--restore-backups` | Restore original dotfiles on uninstall   |
+| `--log-level <lvl>` | debug, info, warn, error (default: info) |
 
 ### Available Categories
 
@@ -209,396 +114,85 @@ The `dotfiles.sh` script provides a unified entrypoint:
 - `go` - Go language
 - `rust` - Rust toolchain via rustup
 - `haskell` - Haskell toolchain via ghcup
-- `dotnet` - .NET SDK (10.0 LTS via APT)
-- `java` - Java (installed via APT, not filterable)
-- `editors` - Dotfile linking
-
-**Note:** APT packages are always installed (including Java, Docker, build tools).
-
-## 8. Uninstalling Tools
-
-The uninstall script provides safe removal of installed tools:
-
-```bash
-./dotfiles.sh uninstall
-```
-
-This will:
-
-- Prompt for confirmation before removing anything
-- Remove NVM and all Node.js versions
-- Remove Rust toolchain (via rustup)
-- Remove uv (Python package manager)
-- Remove Go installation from `/usr/local/go`
-- Remove Haskell toolchain (via ghcup)
-- Remove .NET SDK (via APT)
-- Unlink dotfiles (only removes symlinks)
-
-**Selective Uninstall:**
-
-```bash
-# Remove only Node.js and Rust
-./dotfiles.sh uninstall --only node,rust --confirm
-
-# Remove everything except Haskell
-./dotfiles.sh uninstall --exclude haskell --confirm
-```
-
-**Restore Backups:**
-
-If you want to restore your original dotfiles after uninstalling:
-
-```bash
-./dotfiles.sh uninstall --confirm --restore-backups
-```
-
-This restores the most recent backup from `~/.dotfiles-backup/`.
-
-**Note:** APT packages beyond the SDKs are NOT removed automatically. To remove them:
-
-```bash
-sudo apt remove <package-name>
-```
-
-## 9. VS Code Integration
-
-### 9.1 Install VS Code on Windows
-
-Download from: [https://code.visualstudio.com/](https://code.visualstudio.com/)
-
-### 9.2 Install WSL Extension
-
-In VS Code (Windows):
-
-- Open Extensions
-- Install "**WSL**" by Microsoft
-
-### 9.3 Launch WSL Workspace
-
-From WSL:
-
-```bash
-code .
-```
-
-VS Code will reopen connected directly to WSL.
-
-## 10. Docker Setup (WSL)
-
-### 10.1 Install Docker Desktop (Windows)
-
-Download: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
-
-During setup:
-
-- Enable **WSL 2 backend**
-- Enable integration for your Ubuntu distro
-
-### 10.2 Verify Docker
-
-```bash
-docker --version
-docker run hello-world
-```
-
-## 11. Git Configuration
-
-Git configuration is symlinked from this repository.
-
-Check:
-
-```bash
-git config --list
-```
-
-## 12. SSH Keys (GitLab)
-
-### 12.1 Generate SSH Key
-
-```bash
-ssh-keygen -t ed25519 -C "your.email@example.com"
-```
-
-Press Enter to accept defaults.
-
-### 12.2 Start SSH Agent
-
-```bash
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
-```
-
-### 12.3 Add Key to GitLab
-
-Copy public key:
-
-```bash
-cat ~/.ssh/id_ed25519.pub
-```
-
-Go to:
-
-- GitLab → Preferences → SSH Keys
-- Paste the key
-- Save
-
-### 12.4 Test Connection
-
-```bash
-ssh -T git@gitlab.com
-```
-
-Expected output:
-
-```text
-Welcome to GitLab, @username!
-```
-
-## 13. HTTPS Authentication (Optional)
-
-If you use HTTPS instead of SSH:
-
-```bash
-git config --global credential.helper store
-```
-
-> :warning: This stores credentials unencrypted. SSH is strongly recommended instead.
-
-## 14. Windows ↔ WSL Downloads Linking (Optional)
-
-### 14.1 Create Windows Folder
-
-On Windows:
-
-```text
-C:\Users\<your-user>\WSL-Downloads
-```
-
-### 14.2 Link in WSL
-
-```bash
-ln -s /mnt/c/Users/<your-user>/WSl-Downloads ~/Downloads
-```
-
-This allows seamless file transfer between Windows and WSL.
-
-## 15. Bash Aliases
-
-Aliases are stored in:
-
-```text
-bash/.bash_aliases
-```
-
-Examples included:
-
-```bash
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-alias g='git'
-alias gs='git status'
-alias ga='git add'
-alias path='echo -e ${PATH//:/\\n}'
-```
-
-Changes are applied automatically via `.bashrc`.
-
-## 16. Updating the Environment
-
-To update tools:
-
-```bash
-git pull
-./dotfiles.sh update
-./dotfiles.sh verify
-./dotfiles.sh doctor
-```
-
-- `update` safely updates system packages, Node, Rust, Haskell, Python tooling, and re-links dotfiles
-- `verify` confirms everything is installed and accessible
-- `doctor` highlights warnings, version mismatches, and PATH issues
-
-The installer and update scripts are **idempotent** - safe to rerun multiple times.
-
-You can also selectively update categories:
-
-```bash
-# Update only Node.js and Rust
-./dotfiles.sh update --only node,rust
-
-# Update everything except Haskell
-./dotfiles.sh update --exclude haskell
-```
-
-## 17. Dotfile Backups
-
-Before linking dotfiles, the installer automatically backs up existing files to:
-
-```text
-~/.dotfiles-backup/<timestamp>/
-```
-
-Each backup is timestamped (e.g., `20260110-143022`), so you never lose your original configurations.
-
-To restore a backup:
-
-```bash
-# Find your backups
-ls -la ~/.dotfiles-backup/
-
-# Copy back manually
-cp ~/.dotfiles-backup/20260110-143022/.bashrc ~/
-
-# Or use uninstall with --restore-backups
-./dotfiles.sh uninstall --confirm --restore-backups
-```
-
-## 18. Repository Structure
+- `lean` - Lean 4 via elan
+- `anaconda` - Anaconda/Miniconda
+- `dotnet` - .NET SDK
+- `java` - Java ecosystem
+- `docker` - Docker tooling
+- `dotfiles` - Configuration file linking
+
+**Note:** APT packages (build tools, Java, Docker) are always installed.
+
+## Documentation
+
+- [Installation Guide](docs/installation.md) - Detailed setup and prerequisites
+- [CLI Reference](docs/cli.md) - Complete command documentation with examples
+- [Architecture](docs/architecture.md) - System design and repository structure
+- [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
+- [Uninstall Guide](docs/uninstall.md) - Safe removal and restoration
+
+## Key Features
+
+- [X] **Version pinning** - Exact versions specified in config
+- [X] **Automatic backups** - Dotfiles backed up before modification
+- [X] **Idempotent scripts** - Safe to rerun multiple times
+- [X] **Selective installations** - Install only what you need
+- [X] **Health checks** - Comprehensive verification tooling
+- [X] **Clean uninstall** - Remove tools with optional restoration
+- [X] **Architecture-aware** - Supports amd64 and arm64
+- [X] **WSL optimized** - Special handling for Docker Desktop integration
+
+## Repository Strycture
 
 ```text
 .
-├── bash/
-│   ├── .bashrc
-│   └── .bash_aliases
-├── git/
-│   └── .gitconfig
+├── dotfiles/
+│   ├── bash/           # .bashrc, .bash_aliases
+│   └── git/            # .gitconfig
 ├── packages/
-│   └── apt.txt
+│   └── apt.txt         # APT package list
 ├── scripts/
-│   ├── lib/
-│   │   ├── bootstrap.sh      # Central bootstrap loader
-│   │   ├── logging.sh        # Consistent logging helpers
-│   │   ├── utils.sh          # Command existence checks
-│   │   ├── config.sh         # Version configuration
-│   │   └── checks.sh         # Tool verification logic
-│   └── registry/
-│       └── tools.sh          # Tool registry (single source of truth)
-├── dotfiles.sh               # CLI entrypoint
-├── install.sh                # Installation script
-├── update.sh                 # Update script
-├── verify.sh                 # Quick verification
-├── doctor.sh                 # Full health check
-├── uninstall.sh              # Uninstallation script
+│   ├── core/           # Bootstrap, logging, utilities, registry
+│   ├── tools/          # Individual tool installers
+│   └── commands/       # install, update, verify, doctor, uninstall
+├── docs/               # Documentation
+├── main.sh             # CLI entrypoint
+├── LICENSE
+├── .gitignore
+├── .editorconfig
 └── README.md
 ```
 
-## 19. Tool Categories
+## Design Philosophy
 
-The tool registry (`scripts/registry/tools.sh`) organises tools into categories:
+- **Reproducibility** - Exact versions, scripted setup
+- **Explicit versioning** - Single source of truth in config
+- **Minimal global state** - Language-specific version managers
+- **Portability** - Works across machines and fresh installs
+- **Idempotency** - Safe to rerun scripts
+- **Safety** - Automatic backups before changes
+- **Reversibility** - Clean uninstall with restoration
 
-- **Core**: gcc, make, git, curl, wget
-- **Python**: python3, pip, uv
-- **Node.js**: node, npm (via NVM)
-- **Go**: go
-- **Rust**: rustc, cargo (via rustup)
-- **Java**: java, javac, mvn, gradle
-- **Haskell**: ghcup, ghc, cabal
-- **.NET**: dotnet (SDK)
-- **Containers**: docker
-- **Editors/Terminal**: nvim, tmux
+## Troubleshooting
 
-## 20. Language-Specific Notes
+**Scripts not executable:**
 
-### Python
-
-- `python` → `python3`
-- Project isolation via `uv`
-- No global pip pollution
-
-### Java
-
-- OpenJDK 21
-- Maven & Gradle available
-- JavaFX supported
-
-### Go
-
-- Installed from official binaries (version: 1.25.5)
-- Architecture-aware (amd64/arm64)
-- Version pinned in `scripts/lib/config.sh`
-
-### Rust
-
-- Managed via rustup
-- Stable toolchain
-- Cargo in PATh after shell restart
-
-### Haskell
-
-- Managed via ghcup
-- GHC, Cabal, Stack supported
-- Optional components configurable during install
-
-### Node.js
-
-- Managed via NVM (version: 24.12.0)
-- Multiple versions supported
-- Default version set automatically
-
-### .NET
-
-- Managed via APT (dotnet-sdk-10.0)
-- PATH configured system-wide
-
-## 21. Troubleshooting
-
-### Common Issues
+```bash
+chmod +x main.sh
+```
 
 **Tools not found after install:**
 
 ```bash
-# Restart shell to load new PATH entries
 exec bash
 ```
 
-**Permission denied on scripts:**
+**For detailed help:** See [Troubleshooting Guide](docs/troubleshooting.md)
 
-```bash
-chmod +x dotfiles.sh install.sh update.sh verify.sh doctor.sh uninstall.sh
-```
+## License
 
-**Docker not accessible:**
+MIT - See [LICENSE](LICENSE)
 
-- Ensure Docker Desktop is running on Windows
-- Check WSL integration is enabled in Docker Desktop settings
+## Contributing
 
-**NVM command not found:**
-
-```bash
-# Manually source NVM
-source ~/.nvm/nvm.sh
-```
-
-**Version mismatches:**
-
-- Check `scripts/lib/config.sh` for expected versions
-- Run `./dotfiles.sh doctor` for detailed diagnostics
-
-**Restore original dotfiles:**
-
-```bash
-# List backups
-ls -la ~/.dotfiles-backup/
-
-# Restore via uninstall
-./dotfiles.sh uninstall --confirm --restore-backups
-
-# Or manually copy
-cp ~/.dotfiles-backup/<timestamp>/.bashrc ~/
-```
-
-## 22. Philosophy
-
-This setup prioritises:
-
-- **Reproducibility**: exact versions, scripted setup
-- **Explicit versioning**: single source of truth in config
-- **Minimal global state**: language-specific version managers
-- **Portability**: works across machines and fresh WSL installs
-- **Professional tooling parity**: matches production environments
-- **Idempotency**: safe to rerun scripts multiple times
-- **Consistency**: unified logging and error handling
-- **Flexibility**: selective installation and updates via category filtering
-- **Safety**: automatic backups before modifying dotfiles
-- **Reversibility**: clean uninstall with optional restoration
+Contributions welcome! Please open issues or pull requests on GitHub.
